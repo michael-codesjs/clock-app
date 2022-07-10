@@ -14,4 +14,4 @@ export const timeBreakPoints = {
   minute: 60000,
 };
 
-export const scaleAnimationsDuration = 200;
+export const scaleAnimationsDuration = 150;

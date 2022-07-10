@@ -1,5 +1,6 @@
 import React, { useMemo } from "react"
 import { useRecoilValue } from "recoil"
+import ScaleFade from "../../components/transitions/scale-fade";
 import { getNextRing } from "../../constants/functions";
 import { alarmsAtom } from "../../recoil/atoms"
 import Alarm from "./alarm";
@@ -26,18 +27,20 @@ export default function Alarms() {
   }, [alarms]);
 
   return (
-    <div className="">
-      <Header alarm={nextAlarm} />
-      <div className="flex flex-col space-y-5">
-        {
-          alarms.map(alarm => {
-            return (
-              <Alarm key={alarm.created.valueOf()} alarm={alarm} />
-            )
-          })
-        }
+    <ScaleFade in={true}>
+      <div className="">
+        <Header alarm={nextAlarm} />
+        <div className="flex flex-col space-y-5">
+          {
+            alarms.map(alarm => {
+              return (
+                <Alarm key={alarm.created.valueOf()} alarm={alarm} />
+              )
+            })
+          }
+        </div>
       </div>
-    </div>
+    </ScaleFade>
   )
 
 }

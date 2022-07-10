@@ -15,7 +15,7 @@ export default function Alarm({ alarm } : AlarmProps) {
   const nextRing = useMemo(() => getNextRing(alarm.days, alarm.ringTimes),[alarm]);
 
   return (
-    <div className="flex space-x-4 shadow-xs px-8 py-5 items-center rounded-2xl bg-white">
+    <div className="flex space-x-4 shadow-sm px-8 py-5 items-center rounded-xl bg-white">
       <p className="font-medium w-full text-2xl text-gray-800 tracking-wider">
         { nextRing.toLocaleTimeString("en", { hour: "2-digit", hour12: false, minute: "2-digit" }) } 
       </p>
