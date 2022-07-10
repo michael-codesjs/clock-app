@@ -1,3 +1,68 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  scroll-behavior: smooth;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+.number-scroll-input {
+  @apply h-[240px] w-24 overflow-y-scroll;
+}
+
+.number-scroll-input::before {
+  @apply block w-24 h-20 absolute;
+  background-color: rgba(248, 250, 252, 0.8);
+  content: "";
+}
+
+.number-scroll-input .after::before {
+  @apply block w-24 h-20 absolute translate-y-40;
+  background-color: rgba(248, 250, 252, 0.8);
+  content: "";
+}
+
+.scale-fade {
+  animation: scale-fade-out-animation 0.2s linear forwards;
+}
+
+.scale-fade.in {
+  animation: scale-fade-in-animation 0.2s linear forwards;
+}
+
+
+@keyframes scale-fade-in-animation {
+  0% {
+    @apply scale-[0.9] translate-y-1 opacity-0;
+  }
+
+  100% {
+    @apply scale-100 translate-y-0 opacity-100 z-10;
+  }
+}
+
+
+@keyframes scale-fade-out-animation {
+  0% {
+    @apply scale-100 opacity-100 z-10;
+  }
+
+  100% {
+    @apply scale-[0.9] opacity-0 z-0;
+  }
+}
+
+
+.toast-instance {
+  @apply w-[300px] max-w-[90vw] p-5 flex space-x-2 items-start justify-start rounded-xl shadow-lg;
+}
+
+.toast-instance.info {
+  background-color: rgba(0, 0, 0, 1);
+}
