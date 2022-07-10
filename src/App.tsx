@@ -6,14 +6,16 @@ import Routes from './Routes';
 
 function App() {
   return (
-    <div className="h-screen w-screen flex justify-center items-center overflow-hidden">
-      <div className="sm:max-w-[400px] h-full sm:max-h-[700px] p-5 sm:rounded-3xl w-full flex flex-col items-end bg-gray-50">
-        <div className='w-full h-full'>
-          <Routes />
+    <div className='h-screen w-screen'>
+      <div className="h-full w-full flex justify-center items-center overflow-hidden">
+        <div className="sm:max-w-[400px] h-full sm:max-h-[700px] p-5 sm:rounded-3xl w-full flex flex-col items-end bg-gray-50">
+          <div className='w-full h-full'>
+            <Routes />
+          </div>
+          <Navigation />
         </div>
-        <Navigation />
+        <Toast />
       </div>
-      <Toast />
     </div>
   );
 }

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  height: 100%;
+  background-color: red;
+}
+
 * {
   scroll-behavior: smooth;
 }
