@@ -46,7 +46,6 @@ export function getTimeFromNow(date: Date, depth = 3) {
   const now = new Date().valueOf();
   const then = date.valueOf();
   let difference = then - now;
-  const point = difference < 0 ? "ago" : "from now";
   let currentDepth = 0;
   let timeFromNow = Object.entries(timeBreakPoints).map(entry => {
     const [breakPointName, breakPointValue] = entry;
@@ -56,5 +55,5 @@ export function getTimeFromNow(date: Date, depth = 3) {
     currentDepth+=1;
     return `${currentDepth > 1 ? currentDepth === depth ? " and " : ", " : ""} ${differenceTimes} ${breakPointName}${differenceTimes > 1 ? "s" : ""}`
   });
-  return timeFromNow.join("") + " " + point;
+  return timeFromNow.join("");
 }

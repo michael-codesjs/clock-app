@@ -28,11 +28,11 @@ export default function AddAlarm() {
   const snoozeSettingsDisclosure = useDisclosure();
 
   useEffect(() => {
-    if(!shouldSnooze[0] && snoozeSettingsDisclosure.isOpen) snoozeSettingsDisclosure.close();
-  },[shouldSnooze[0]]);
+    if (!shouldSnooze[0] && snoozeSettingsDisclosure.isOpen) snoozeSettingsDisclosure.close();
+  }, [shouldSnooze[0]]);
 
   function addAlarm() {
-    let ringDays:Array<number> = (days.length < 1) ? [getTomorrowsDayInTheWeek()] : days[0];
+    let ringDays: Array<number> = (days.length < 1) ? [getTomorrowsDayInTheWeek()] : days[0];
     const alarm: Alarm = {
       name,
       created: new Date(),
@@ -46,7 +46,7 @@ export default function AddAlarm() {
     const fromNow = getTimeFromNow(nextRing);
     setAlarms(alarms => [alarm, ...alarms]);
     toast({
-      title: "Alarm set for "+fromNow,
+      title: "Alarm in " + fromNow + " from now",
       duration: 3000,
       isClosable: true
     });
@@ -54,8 +54,7 @@ export default function AddAlarm() {
   }
 
   return (
-    <ScaleFade in={true}>
-    <div className="w-full h-full max-h-full flex flex-col space-y-5">
+    <div className="w-full h-full flex flex-col space-y-5">
 
       { /* scroll input group */}
       <div className="flex items-center justify-center">
@@ -65,7 +64,7 @@ export default function AddAlarm() {
       </div>
 
       {/* ALARM SETTINGS */}
-      <div className="rounded-3xl p-5 flex flex-col space-y-4 bg-white h-full max-h-72 overflow-y-scroll">
+      <div className="rounded-3xl p-5 flex-1 flex flex-col space-y-4 bg-white overflow-y-scroll">
 
         {/* days input */}
         <DaysInput state={days} />
@@ -122,7 +121,7 @@ export default function AddAlarm() {
                           name="interval"
                           value={interval}
                           checked={!!snooze && snooze.interval === interval}
-                          onChange={() => {}}
+                          onChange={() => { }}
                         />
                         <label htmlFor={interval.toString()} className={"text-sm text-gray-500 cursor-pointer"}> {interval} minutes </label>
                       </div>
@@ -156,7 +155,7 @@ export default function AddAlarm() {
                           name="repeat"
                           value={repeat}
                           checked={!!snooze && snooze.repeat === repeat}
-                          onChange={() => {}}
+                          onChange={() => { }}
                         />
                         <label htmlFor={repeat.toString()} className={"text-sm text-gray-500 cursor-pointer"}> {repeat} times </label>
                       </div>
@@ -171,7 +170,7 @@ export default function AddAlarm() {
         </div>
 
       </div>
-      
+
       <div className="flex space-x-10">
         <button
           className="w-full py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm font-semibold"
@@ -184,6 +183,5 @@ export default function AddAlarm() {
       </div>
 
     </div>
-    </ScaleFade>
   )
 }

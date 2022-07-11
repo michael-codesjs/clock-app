@@ -27,20 +27,18 @@ export default function Alarms() {
   }, [alarms]);
 
   return (
-    <ScaleFade in={true}>
-      <div className="">
-        <Header alarm={nextAlarm} />
-        <div className="flex flex-col space-y-5">
-          {
-            alarms.map(alarm => {
-              return (
-                <Alarm key={alarm.created.valueOf()} alarm={alarm} />
-              )
-            })
-          }
-        </div>
+    <div className="h-full w-full flex flex-col space-y-2">
+      <Header alarm={nextAlarm} />
+      <div className="flex flex-col flex-1 overflow-scroll space-y-5">
+        {
+          alarms.map(alarm => {
+            return (
+              <Alarm key={alarm.created.valueOf()} alarm={alarm} />
+            )
+          })
+        }
       </div>
-    </ScaleFade>
+    </div>
   )
 
 }
