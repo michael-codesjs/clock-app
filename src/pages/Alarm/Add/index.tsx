@@ -77,7 +77,7 @@ export default function AddAlarm() {
           placeholder={"Alarm name."}
         />
 
-        {/* snooze */}
+        {/* snooze settings */}
         <div className="flex flex-col space-y-2">
           <div className="flex w-full items-center py-2">
             <div className={"w-full cursor-pointer"} onClick={() => {

@@ -5,8 +5,9 @@ interface DisclosureArguments {
 }
 
 export default function useDisclosure(args?:DisclosureArguments) {
+
   
-  const [isOpen, setIsOpen] = useState(!!args && args.defaultIsOpen);
+  const [isOpen, setIsOpen] = useState(args && args.defaultIsOpen);
 
   const open =  () => setIsOpen(true);
   const close = () => setIsOpen(false);
