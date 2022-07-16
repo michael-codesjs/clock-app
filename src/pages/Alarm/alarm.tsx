@@ -1,4 +1,4 @@
-import { useDrag } from "@use-gesture/react";
+import { useDrag, UserDragConfig, UserGestureConfig } from "@use-gesture/react";
 import React, { Children, useMemo, useState } from "react"
 import { useSpring, animated } from "react-spring";
 import Toggle from "../../components/buttons/toggle";
@@ -21,10 +21,20 @@ export default function Alarm({ alarm }: AlarmProps) {
   const [{ x, scale }, springAPI] = useSpring(() => ({ x: 0, scale: 1, zIndex: 0 }));
 
   // Set the drag hook and define component movement based on gesture data
-  const bindDrag = useDrag(({ active, tap, movement: [mx] }) => {
+  const dragOptions:UserDragConfig = {
+    axis: "x",
+    bounds: {
+      left: 0, right: 100
+    },
+    from: () => [x.get(), 0],
+    pointer: {
+      touch: true,
+    }
+  }
+  const bindDrag = useDrag(({ down, tap, movement: [mx] }) => {
     const currentX = x.get();
-    springAPI.start({ x: active ? mx : mx < maxDrag / 2 ? 0 : maxDrag, scale: active ? 1.05 : 1, immediate: active });
-  });
+    springAPI.start({ x: down ? mx: 0, scale: down ? 1.05 : 1, immediate: down });
+  },dragOptions);
 
 
   const opacity = x.to({
@@ -55,7 +65,7 @@ export default function Alarm({ alarm }: AlarmProps) {
 
       <animated.button
         style={{ width, opacity, fontWeight, color: "gray", textAlign: "center" }}
-        className={"text-[10px"}
+        className={"text-[13px]"}
       > delete </animated.button>
 
       <animated.div
