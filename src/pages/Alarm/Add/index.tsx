@@ -4,7 +4,6 @@ import { useSetRecoilState } from "recoil";
 import Toggle from "../../../components/buttons/toggle";
 import DaysInput from "../../../components/days-input";
 import NumberScrollInput from "../../../components/number-scroll-input";
-import ScaleFade from "../../../components/transitions/scale-fade";
 import { getNextRing, getTimeFromNow, getTomorrowsDayInTheWeek } from "../../../constants/functions";
 import useDisclosure from "../../../hooks/use-disclosure";
 import useToast from "../../../hooks/use-toast";

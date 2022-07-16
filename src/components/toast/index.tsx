@@ -12,7 +12,6 @@ export default function Toast() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // render a new toast whenever the toast state changes;
-  // delete it when its duration elapses;
   useEffect(() => {
     if (!incomingToast) return;
     let toast: ToastInstance = { ...incomingToast, created: new Date().valueOf() };
@@ -27,7 +26,7 @@ export default function Toast() {
 
   return (
     <div ref={containerRef} className="flex justify-center items-center flex-col space-y-5 w-screen min-w-screen overflow-visible fixed bottom-8">
-      {toasts.map((toast,index) => <Instance key={toast.created} toast={toast} state={[toasts, setToasts]} />)}
+      {toasts.map((toast) => <Instance key={toast.created} toast={toast} state={[toasts, setToasts]} />)}
     </div>
   )
 }

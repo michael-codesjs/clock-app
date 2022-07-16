@@ -51,7 +51,7 @@ export default function Alarm({ alarm }: AlarmProps) {
 
   const bindDrag = useDrag((state) => {
     const { down, offset: [mx], last } = state;
-    if (last && mx > (maxDrag / 1.3)) return initiateDeleteAlarmAnimation();
+    if (last && mx > (maxDrag / 1.5)) return initiateDeleteAlarmAnimation();
     contentSpringAPI.start({ x: down ? mx : 0, scale: down ? 1.05 : 1, immediate: false });
   }, dragOptions);
 
@@ -59,10 +59,18 @@ export default function Alarm({ alarm }: AlarmProps) {
     containerSpringAPI.set({ deleteTextOpacity: 0 });
     containerSpringAPI.start({
       x: 200, scale: 0, opacity: 0,
+      config: {
+        duration: 165
+      },
       // when this is resolved, trigger another animation that reduces the height.
       onResolve: () => {
         containerSpringAPI.start({
           height: 0, paddingBottom: 0,
+          config: {
+            friction: 18,
+            mass: 0.7
+
+          },
           // when this last spring animation is done, delete the alarm from the alarmsAtom;
           onResolve: deleteAlarm
         })
@@ -77,15 +85,6 @@ export default function Alarm({ alarm }: AlarmProps) {
     })
   }
 
-  /* const opacity = x.to({
-     map: Math.abs,
-     range: [0, maxDrag],
-     output: [0, maxDrag],
-     extrapolate: 'clamp',
-   });
- 
-   */
-
   const width = contentSpringStates.x.to({
     map: Math.abs,
     range: [0, maxDrag],
@@ -99,8 +98,6 @@ export default function Alarm({ alarm }: AlarmProps) {
     output: [100, 900],
     extrapolate: 'clamp',
   });
-
-  // console.log(width);
 
   return (
     <animated.div
@@ -118,10 +115,12 @@ export default function Alarm({ alarm }: AlarmProps) {
         className="w-full h-full z-10 p-5 flex space-x-5 items-center shadow-sm rounded-xl bg-white"
         style={contentSpringStates}
       >
-
-        <p className="font-medium w-full text-2xl text-gray-800 tracking-wider">
-          {nextRing.toLocaleTimeString("en", { hour: "2-digit", hour12: false, minute: "2-digit" })}
-        </p>
+        <div className="w-full">
+          <p className="font-medium w-full text-2xl text-gray-800 tracking-wider">
+            {nextRing.toLocaleTimeString("en", { hour: "2-digit", hour12: false, minute: "2-digit" })}
+          </p>
+          <p className="text-[11px] text-gray-500"> { alarm.name } </p>
+        </div>
 
         <SelectedDays days={alarm.days} />
 

@@ -1,4 +1,5 @@
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
+import { useSpring, animated } from "react-spring";
 
 
 interface ScaleFadeProps {
@@ -7,10 +8,18 @@ interface ScaleFadeProps {
 }
 
 const ScaleFade:FC<ScaleFadeProps> = (props) => {
+
+  const [states, api] = useSpring(() => ({ scale: 0, zIndex: 0, opacity: 0, config: { duration: 200 } }));
+
+  useEffect(() => {
+    api.start(props.in ? { scale: 1, zIndex: 10, opacity: 1, immediate: false } : { scale: 0 });
+  },[props.in]);
+
   return (
-    <div
-      className={"w-auto h-auto max-w-full max-h-full scale-fade "+(props.in ? "in" : "")}
-    > { props.children } </div>
+    <animated.div
+      style={states}
+      className={"w-auto h-auto max-w-full z-10 max-h-full"}
+    > { props.children } </animated.div>
   )
 };
 
