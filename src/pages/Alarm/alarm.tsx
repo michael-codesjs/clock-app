@@ -1,9 +1,11 @@
 import { useDrag, UserDragConfig, UserGestureConfig } from "@use-gesture/react";
 import React, { Children, useMemo, useState } from "react"
 import { useSpring, animated } from "react-spring";
+import { useSetRecoilState } from "recoil";
 import Toggle from "../../components/buttons/toggle";
 import SelectedDays from "../../components/days-input/selected";
 import { getNextRing } from "../../constants/functions"
+import { alarmsAtom } from "../../recoil/atoms";
 import { Alarm as IAlarm } from "../../types/interfaces"
 
 
@@ -13,65 +15,103 @@ interface AlarmProps {
 
 export default function Alarm({ alarm }: AlarmProps) {
 
+  const setAlarms = useSetRecoilState(alarmsAtom);
+
   const enabled = useState(alarm.enabled);
   const nextRing = useMemo(() => getNextRing(alarm.days, alarm.ringTimes), [alarm]);
 
-  const maxDrag = 50; // maximum number of pixels the alarm view can be dragged.
+  const maxDrag = 100; // maximum number of pixels the alarm view can be dragged.
 
-  const [{ x, scale }, springAPI] = useSpring(() => ({ x: 0, scale: 1, zIndex: 0 }));
+  const [containerSpringStates, containerSpringAPI] = useSpring(() => {
+    return {
+      x: 0, y: 0, scale: 1, opacity: 1,
+      // text opacity
+      deleteTextOpacity: 1,
+    }
+  }) 
 
-  // Set the drag hook and define component movement based on gesture data
+  const [contentSpringStates, contentSpringAPI] = useSpring(() => {
+    return {
+      x: 0, y: 0, opacity: 1, scale: 1,
+    }
+  });
+
   const dragOptions:UserDragConfig = {
     axis: "x",
     bounds: {
-      left: 0, right: 100
+      left: 0, right: maxDrag
     },
-    from: () => [x.get(), 0],
+    rubberband: 5,
+    from: () => [contentSpringStates.x.get(), 0],
     pointer: {
       touch: true,
-    }
+    },
+    preventScroll: true,
+    preventScrollAxis: "x"
   }
-  const bindDrag = useDrag(({ down, tap, movement: [mx] }) => {
-    const currentX = x.get();
-    springAPI.start({ x: down ? mx: 0, scale: down ? 1.05 : 1, immediate: down });
+
+  const bindDrag = useDrag((state) => {
+    const { down, offset: [mx], last } = state;
+    if(last && mx > (maxDrag/2)) return initiateDeleteAlarmAnimation();
+    contentSpringAPI.start({ x: down ? mx : mx < maxDrag/2 ? 0 : maxDrag, scale: down ? 1.05 : 1, immediate: false });
   },dragOptions);
 
+  function initiateDeleteAlarmAnimation() {
+    containerSpringAPI.set({ deleteTextOpacity: 0 });
+    containerSpringAPI.start({
+      x: 200, scale: 0, opacity: 0,
+      // when this spring animation is done, delete the alarm from the alarmsAtom;
+      onResolve: deleteAlarm
+    });
+  }
 
-  const opacity = x.to({
+  function deleteAlarm() {
+    setAlarms(alarms => {
+      // alarm.created acts as id.
+      return alarms.filter(thatAlarm => thatAlarm.created !== alarm.created);
+    })
+  }
+
+ /* const opacity = x.to({
     map: Math.abs,
     range: [0, maxDrag],
     output: [0, maxDrag],
     extrapolate: 'clamp',
   });
 
-  const width = x.to({
+  */
+
+  const width = contentSpringStates.x.to({
     map: Math.abs,
     range: [0, maxDrag],
     output: [0, maxDrag - ((1 / 5) * maxDrag)],
     extrapolate: 'clamp',
   });
 
-  const fontWeight = x.to({
+  const fontWeight = contentSpringStates.x.to({
     map: Math.abs,
     range: [0, maxDrag],
-    output: [300, 600],
+    output: [100, 900],
     extrapolate: 'clamp',
   });
 
+  // console.log(width);
+
   return (
     <animated.div
-      className="flex items-center w-full overflow-x-scroll overflow-visible"
+      className="flex items-center w-full min-h-fit cursor-grab"
+      style={containerSpringStates}
+      {...bindDrag()}
     >
 
       <animated.button
-        style={{ width, opacity, fontWeight, color: "gray", textAlign: "center" }}
-        className={"text-[13px]"}
+        style={{ width, fontWeight, opacity: containerSpringStates.deleteTextOpacity, color: "red", textAlign: "center" }}
+        className={"text-xs"}
       > delete </animated.button>
 
       <animated.div
         className="w-full z-10 p-5 flex space-x-5 items-center shadow-sm rounded-xl bg-white"
-        style={{ x, scale }}
-        {...bindDrag()}
+        style={contentSpringStates}
       >
 
         <p className="font-medium w-full text-2xl text-gray-800 tracking-wider">

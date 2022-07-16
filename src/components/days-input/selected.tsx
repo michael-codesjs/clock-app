@@ -19,7 +19,7 @@ export default function SelectedDays({ days } : SelectedDaysProps) {
         days.length ? weekDays.map((day,i) => {
           const isSelected = days.indexOf(i) > -1;
           return (
-            <div className="flex flex-col space-y-1 items-center justify-center">
+            <div className="flex flex-col space-y-1 items-center justify-center" key={i}>
               { isSelected && (
                 <div className="w-1 h-1 rounded-full bg-purple-600" />
               ) }
