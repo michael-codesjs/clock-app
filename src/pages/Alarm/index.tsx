@@ -29,7 +29,7 @@ export default function Alarms() {
   return (
     <div className="h-full w-full flex flex-col space-y-2">
       <Header alarm={nextAlarm} />
-      <div className="flex flex-col items-start justify-start flex-1 overflow-y-scroll space-y-5">
+      <div className="flex flex-col items-start justify-start flex-1 overflow-y-scroll">
         {
           alarms.map(alarm => {
             return (

@@ -25,10 +25,11 @@ export default function Alarm({ alarm }: AlarmProps) {
   const [containerSpringStates, containerSpringAPI] = useSpring(() => {
     return {
       x: 0, y: 0, scale: 1, opacity: 1,
+      height: 100, paddingBottom: 20,
       // text opacity
       deleteTextOpacity: 1,
     }
-  }) 
+  })
 
   const [contentSpringStates, contentSpringAPI] = useSpring(() => {
     return {
@@ -36,7 +37,7 @@ export default function Alarm({ alarm }: AlarmProps) {
     }
   });
 
-  const dragOptions:UserDragConfig = {
+  const dragOptions: UserDragConfig = {
     axis: "x",
     bounds: {
       left: 0, right: maxDrag
@@ -46,22 +47,26 @@ export default function Alarm({ alarm }: AlarmProps) {
     pointer: {
       touch: true,
     },
-    // preventScroll: true,
-    // preventScrollAxis: "x"
   }
 
   const bindDrag = useDrag((state) => {
     const { down, offset: [mx], last } = state;
-    if(last && mx > (maxDrag/2)) return initiateDeleteAlarmAnimation();
-    contentSpringAPI.start({ x: down ? mx : mx < maxDrag/2 ? 0 : maxDrag, scale: down ? 1.05 : 1, immediate: false });
-  },dragOptions);
+    if (last && mx > (maxDrag / 1.3)) return initiateDeleteAlarmAnimation();
+    contentSpringAPI.start({ x: down ? mx : 0, scale: down ? 1.05 : 1, immediate: false });
+  }, dragOptions);
 
   function initiateDeleteAlarmAnimation() {
     containerSpringAPI.set({ deleteTextOpacity: 0 });
     containerSpringAPI.start({
       x: 200, scale: 0, opacity: 0,
-      // when this spring animation is done, delete the alarm from the alarmsAtom;
-      onResolve: deleteAlarm
+      // when this is resolved, trigger another animation that reduces the height.
+      onResolve: () => {
+        containerSpringAPI.start({
+          height: 0, paddingBottom: 0,
+          // when this last spring animation is done, delete the alarm from the alarmsAtom;
+          onResolve: deleteAlarm
+        })
+      }
     });
   }
 
@@ -72,14 +77,14 @@ export default function Alarm({ alarm }: AlarmProps) {
     })
   }
 
- /* const opacity = x.to({
-    map: Math.abs,
-    range: [0, maxDrag],
-    output: [0, maxDrag],
-    extrapolate: 'clamp',
-  });
-
-  */
+  /* const opacity = x.to({
+     map: Math.abs,
+     range: [0, maxDrag],
+     output: [0, maxDrag],
+     extrapolate: 'clamp',
+   });
+ 
+   */
 
   const width = contentSpringStates.x.to({
     map: Math.abs,
@@ -110,7 +115,7 @@ export default function Alarm({ alarm }: AlarmProps) {
       > delete </animated.button>
 
       <animated.div
-        className="w-full z-10 p-5 flex space-x-5 items-center shadow-sm rounded-xl bg-white"
+        className="w-full h-full z-10 p-5 flex space-x-5 items-center shadow-sm rounded-xl bg-white"
         style={contentSpringStates}
       >
 
@@ -120,7 +125,7 @@ export default function Alarm({ alarm }: AlarmProps) {
 
         <SelectedDays days={alarm.days} />
 
-        <div className={"px-2"} children={""}  />
+        <div className={"px-2"} children={""} />
 
         <div> <Toggle state={enabled} /> </div>
 
