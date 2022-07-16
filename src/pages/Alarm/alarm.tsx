@@ -46,8 +46,8 @@ export default function Alarm({ alarm }: AlarmProps) {
     pointer: {
       touch: true,
     },
-    preventScroll: true,
-    preventScrollAxis: "x"
+    // preventScroll: true,
+    // preventScrollAxis: "x"
   }
 
   const bindDrag = useDrag((state) => {
