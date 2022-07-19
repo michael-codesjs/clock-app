@@ -30,7 +30,7 @@ export default function MutateAlarmDrawer() {
     x: 0, y: 0
   }));
 
-  const maxDrag = 200;
+  const maxDrag = 250;
 
   const dragOptions: UserDragConfig = {
     axis: useBreakpointValue({ base: "y", md: "x" }),
@@ -38,7 +38,7 @@ export default function MutateAlarmDrawer() {
       base: { top: 0, bottom: maxDrag },
       md: { left: 0, right: maxDrag }
     }),
-    rubberband: 1,
+    rubberband: false,
     pointer: {
       touch: true,
     },
