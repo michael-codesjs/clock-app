@@ -46,7 +46,11 @@ export default function MutateAlarmDrawer() {
 
   const bindDrag = useDrag((state) => {
     const { down, offset: [mx, my], last } = state;
-    // if (last && mx > (maxDrag / 1.5)) return initiateDeleteAlarmAnimation();
+    const contraint = (maxDrag/1.5);
+    if (last && (my > contraint || mx > contraint)) {
+      springAPI.start({ x: 0, y: 0 });
+      return onClose();
+    }
     springAPI.start({ x: down ? mx : 0, y: down ? my : 0, immediate: false });
   }, dragOptions);
 
