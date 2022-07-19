@@ -68,26 +68,37 @@ export default function MutateAlarmDrawer() {
 
       <DrawerOverlay onClick={onClose} />
 
-      <animated.div
-        style={{
-          ...styles,
-          backgroundColor: useColorModeValue("white", "gray.800")
+      <DrawerContent
+        borderTopRadius={{
+          base: "32px",
+          md: "0"
         }}
+        p={0}
+        width={"full"}
+        height={{
+          base: "auto",
+          md: "100vh"
+        }}
+        maxH={{
+          base: "90vh",
+          md: "100vh"
+        }}
+        bg={"none"}
       >
-        <DrawerContent
-          borderTopRadius={{
-            base: "32px",
-            md: "0"
+        <animated.div
+          style={{
+            ...styles,
+            height: "100%",
+            borderRadius: "inherit",
+            backgroundColor: useColorModeValue("white", "gray.800")
           }}
-          p={0}
-          width={"full"}
-          {...bindDrag()}
         >
 
           <DrawerHeader
             as={VStack}
             spacing={4}
             align={"center"}
+            {...bindDrag()}
           >
             <VStack
               align={"center"}
@@ -128,10 +139,6 @@ export default function MutateAlarmDrawer() {
               base: "full",
               md: "auto"
             }}
-            height={{
-              base: "90vh",
-              md: "100vh"
-            }}
           >
 
             { /* scroll input group */}
@@ -149,9 +156,8 @@ export default function MutateAlarmDrawer() {
             </HStack>
 
           </DrawerBody>
-
-        </DrawerContent>
-      </animated.div>
+        </animated.div>
+      </DrawerContent>
 
     </Drawer >
   )
