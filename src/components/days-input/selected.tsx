@@ -1,6 +1,4 @@
 import React from "react";
-import { Interface } from "readline";
-import { getNextRing } from "../../constants/functions";
 
 interface SelectedDaysProps {
   days: Array<number>

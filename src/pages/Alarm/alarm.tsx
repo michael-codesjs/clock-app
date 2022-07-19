@@ -1,24 +1,22 @@
-import { useDrag, UserDragConfig, UserGestureConfig } from "@use-gesture/react";
-import React, { Children, useMemo, useState } from "react"
+import { useDrag, UserDragConfig } from "@use-gesture/react";
+import React, { useMemo, useState } from "react"
 import { useSpring, animated } from "react-spring";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import Toggle from "../../components/buttons/toggle";
 import SelectedDays from "../../components/days-input/selected";
-import { getNextRing } from "../../constants/functions"
 import { alarmsAtom } from "../../recoil/atoms";
-import { Alarm as IAlarm } from "../../types/interfaces"
-
+import { Alarm as AlarmClass } from "../../classes/alarm";
 
 interface AlarmProps {
-  alarm: IAlarm
+  alarm: AlarmClass
 }
 
 export default function Alarm({ alarm }: AlarmProps) {
 
-  const setAlarms = useSetRecoilState(alarmsAtom);
+  const [alarms, setAlarms] = useRecoilState(alarmsAtom);
 
   const enabled = useState(alarm.enabled);
-  const nextRing = useMemo(() => getNextRing(alarm.days, alarm.ringTimes), [alarm]);
+  const nextRing = useMemo(() => alarm.nextRingDate, [alarm]);
 
   const maxDrag = 100; // maximum number of pixels the alarm view can be dragged.
 
@@ -42,7 +40,7 @@ export default function Alarm({ alarm }: AlarmProps) {
     bounds: {
       left: 0, right: maxDrag
     },
-    rubberband: 5,
+    rubberband: 1,
     from: () => [contentSpringStates.x.get(), 0],
     pointer: {
       touch: true,
@@ -72,17 +70,13 @@ export default function Alarm({ alarm }: AlarmProps) {
 
           },
           // when this last spring animation is done, delete the alarm from the alarmsAtom;
-          onResolve: deleteAlarm
+          onResolve: () => {
+            const alarmsWithThisDeleted = alarm.deleteAlarmFrom(alarms);
+            setAlarms(alarmsWithThisDeleted);
+          }
         })
       }
     });
-  }
-
-  function deleteAlarm() {
-    setAlarms(alarms => {
-      // alarm.created acts as id.
-      return alarms.filter(thatAlarm => thatAlarm.created !== alarm.created);
-    })
   }
 
   const width = contentSpringStates.x.to({

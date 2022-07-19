@@ -5,13 +5,17 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RecoilRoot } from 'recoil';
 import { BrowserRouter } from 'react-router-dom';
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 
 const root = createRoot(document.getElementById('root')!);
 root.render(
   <RecoilRoot>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ChakraProvider>
+      <ColorModeScript />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ChakraProvider>
   </RecoilRoot>
 );
 

@@ -1,12 +1,62 @@
 
+import { Stack, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
-import { paths } from "../../constants";
-import NavigationLink from "./item";
+import { paths } from "../../utilities/constants";
+import ColorModeSwitcher from "../buttons/color-mode-switcher";
+import NavigationItem from "./item";
 
-export default function Navigation():React.ReactElement {
+export default function Navigation(): React.ReactElement {
+  
   return (
-    <div className="flex items-center justify-between space-x-4 w-full p-5">
-      {Object.entries(paths).map(([name, address]) => <NavigationLink key={name} name={name} address={address}/>)}
-    </div>
+    <Stack
+      order={{
+        base: 2,
+        md: 1
+      }}
+      direction={{
+        base: "row",
+        md: "column"
+      }}
+      align={"center"}
+      justify={"center"}
+      width={{
+        base: "full",
+        md: "300px"
+      }}
+      spacing={{
+        base: 5,
+        md: 4,
+      }}
+      px={{
+        base: 5,
+        md: 10
+      }}
+      py={{
+        base: 5,
+        md: 20
+      }}
+      borderRadius={{
+        base: 0,
+        md: "lg"
+      }}
+      className={"fancy-shadow"}
+      borderTopWidth={{
+        base: "1px",
+        md: 0
+      }}
+      borderTopColor={useColorModeValue("gray.100","gray.900")}
+      backgroundColor={useColorModeValue("white","gray.900")}
+    >
+
+      {
+        Object.entries(paths).map(
+          ([name, address], index) => <NavigationItem key={name} name={name} address={address} index={index} />
+        )
+      }
+
+      <ColorModeSwitcher />    
+
+    </Stack>
   )
+
 }

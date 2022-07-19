@@ -1,6 +1,5 @@
 import { ToastPosition, ToastStatus } from "./enums";
 
-
 export interface ToastInstance {
   status?: ToastStatus,
   title?: string,
@@ -11,12 +10,31 @@ export interface ToastInstance {
   created?: number
 }
 
-export interface Alarm {
+/* ALARM RELATED TYPES */
+
+export interface InterfaceAlarm {
   name: string,
-  created: Date,
+  enabled: boolean,
+  created?: Date,
   days: Array<number>,
-  ringTimes: { hours: number, minutes: number },
-  onceOff: boolean,
-  snooze: null | { interval: number, repeat: number },
-  enabled: boolean
+  time: { hour: number, minute: number },
+  snooze: InterfaceSnoozeSettings | null,
+  onceOff: boolean
 }
+
+export interface InterfaceSnoozeSettings {
+  interval: number,
+  repeat: number
+};
+
+export interface InterfaceAlarmMethods {
+  setTimeOfDateToTimeOfAlarm: () => Date,
+  getNextRingDate: () => Date,
+}
+
+export interface InterfaceTimeSettings {
+  days: Array<number>,
+  time: { hour: number, minute: number }
+}
+
+/* END */

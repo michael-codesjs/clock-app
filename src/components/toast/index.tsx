@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import { useRecoilValue } from "recoil"
-import { scaleAnimationsDuration } from "../../constants";
+import { scaleAnimationsDuration } from "../../utilities/constants";
 import { incomingToastAtom } from "../../recoil/atoms"
 import { ToastInstance } from "../../types/interfaces";
 import Instance from "./instance";

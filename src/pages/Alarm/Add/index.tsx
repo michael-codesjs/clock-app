@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
+import {Alarm} from "../../../classes/alarm";
+import { NullSnoozeSettings, SnoozeSettings } from "../../../classes/alarm/snooze-settings";
 import Toggle from "../../../components/buttons/toggle";
 import DaysInput from "../../../components/days-input";
 import NumberScrollInput from "../../../components/number-scroll-input";
-import { getNextRing, getTimeFromNow, getTomorrowsDayInTheWeek } from "../../../constants/functions";
 import useDisclosure from "../../../hooks/use-disclosure";
 import useToast from "../../../hooks/use-toast";
 import { alarmsAtom } from "../../../recoil/atoms";
-import { Alarm } from "../../../types/interfaces";
+import { getTimeFromNow } from "../../../utilities/functions";
 
 export default function AddAlarm() {
 
@@ -17,12 +18,12 @@ export default function AddAlarm() {
 
   const setAlarms = useSetRecoilState(alarmsAtom);
 
-  const hours = useState(0);
-  const minutes = useState(0);
-  const days = useState<Array<number>>([]);
+  const [hour, setHour] = useState(0);
+  const [minute, setMinute] = useState(0);
+  const [days, setDays] = useState<Array<number>>([]);
   const [name, setName] = useState("");
 
-  const [snooze, setSnooze] = useState<{ interval: number, repeat: number }>({ interval: 5, repeat: 3 });
+  const [snooze, setSnooze] = useState<SnoozeSettings | NullSnoozeSettings>(new SnoozeSettings({ repeat: 3, interval: 5 }));
   const shouldSnooze = useState(true);
   const snoozeSettingsDisclosure = useDisclosure();
 
@@ -31,25 +32,30 @@ export default function AddAlarm() {
   }, [shouldSnooze[0]]);
 
   function addAlarm() {
-    let ringDays: Array<number> = (days.length < 1) ? [getTomorrowsDayInTheWeek()] : days[0];
-    const alarm: Alarm = {
+
+    // instantiate alarm instance.
+    const alarm = new Alarm({
       name,
-      created: new Date(),
-      days: ringDays,
-      onceOff: !days[0].length,
-      ringTimes: { hours: hours[0], minutes: minutes[0] },
-      snooze,
-      enabled: true
-    };
-    const nextRing = getNextRing(days[0], { hours: hours[0], minutes: minutes[0] });
-    const fromNow = getTimeFromNow(nextRing);
+      enabled: true,
+      days,
+      time: { hour, minute },
+      onceOff: false,
+      snooze
+    });
+
+    // set to state
     setAlarms(alarms => [alarm, ...alarms]);
+
+    // provide feedback
+    const timeFromNow = getTimeFromNow(alarm.nextRingDate);
     toast({
-      title: "Alarm in " + fromNow + " from now",
+      title: "Alarm in " + timeFromNow + " from now",
       duration: 3000,
       isClosable: true
     });
-    navigate(-1)
+
+    // navigate to home page
+    navigate(-1);
   }
 
   return (
@@ -57,16 +63,16 @@ export default function AddAlarm() {
 
       { /* scroll input group */}
       <div className="flex items-center justify-center">
-        <NumberScrollInput name={""} max={24} state={hours} />
+        <NumberScrollInput name={""} max={24} state={[hour, setHour]} />
         <p className="text-4xl font-medium text-center">:</p>
-        <NumberScrollInput name={""} max={60} state={minutes} />
+        <NumberScrollInput name={""} max={60} state={[minute, setMinute]} />
       </div>
 
       {/* ALARM SETTINGS */}
       <div className="rounded-3xl p-5 flex-1 flex flex-col space-y-4 bg-white overflow-y-scroll">
 
         {/* days input */}
-        <DaysInput state={days} />
+        <DaysInput state={[days, setDays]} />
 
         {/* alarm name */}
         <input

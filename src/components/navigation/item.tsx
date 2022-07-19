@@ -1,24 +1,54 @@
+import { Box, Flex, HStack, Icon, Text, useColorModeValue, VStack } from "@chakra-ui/react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { IoMdClock, IoMdAlarm } from "react-icons/io"
+import { AiOutlineClockCircle } from "react-icons/ai"
 
 interface NavigationItemProps {
   name: string,
-  address: string
+  address: string,
+  index: number
 }
 
+export const NAVIGATION_ICONS = [IoMdAlarm, AiOutlineClockCircle]
 
-export default function NavigationItem({ name, address }: NavigationItemProps): React.ReactElement {
+
+export default function NavigationItem({ name, address, index }: NavigationItemProps): React.ReactElement {
 
   const { pathname } = useLocation();
   const isActive = pathname.indexOf(address) > -1;
 
   return (
-    <div className="flex flex-col items-center justify-center space-y-1">
-      <Link
-        to={address}
-        className={"text-xs capitalize transition-[font-weight] " + (isActive ? "font-bold text-gray-700" : "font-normal text-gray-500")}
-      > {name} </Link>
-      <div className={"h-[3px] rounded-sm transition-[width] bg-gray-700 " + (isActive ? "w-full" : "w-0")} />
-    </div>
+    <HStack
+      as={Link}
+      to={address}
+      spacing={5}
+      width={"full"}
+    >
+      <Flex
+        align={"center"}
+        justify={"center"}
+        width={10}
+        height={10}
+        borderRadius={"full"}
+        backgroundColor={isActive ? "yellow.400" : "none"}
+      >
+        <Icon
+          as={NAVIGATION_ICONS[index]}
+          width={"18px"}
+          height={"18px"}
+          color={"gray.800"}
+        />
+      </Flex>
+
+      <Text
+        fontSize={"14px"}
+        fontWeight={isActive ? "medium" : "normal" }
+        textTransform={"capitalize"}
+        display={{ base: "none", md: "block" }}
+        color={useColorModeValue("gray.700","gray.100")}
+      > {name} </Text>
+
+    </HStack>
   )
 }

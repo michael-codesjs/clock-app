@@ -19,20 +19,32 @@ body, html {
   width: 0;
 }
 
-.number-scroll-input {
-  @apply h-[240px] w-24 overflow-y-scroll;
-}
-
 .number-scroll-input::before {
   @apply block w-24 h-20 absolute;
-  background-color: rgba(248, 250, 252, 0.8);
   content: "";
 }
 
 .number-scroll-input .after::before {
   @apply block w-24 h-20 absolute translate-y-40;
-  background-color: rgba(248, 250, 252, 0.8);
   content: "";
+}
+
+.number-scroll-input.light::before {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+
+.number-scroll-input.dark::before {
+  background-color: rgb(26, 32, 44,0.8);
+}
+
+
+.number-scroll-input.light .after::before {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.number-scroll-input.dark .after::before {
+  background-color: rgb(26, 32, 44,0.8);
 }
 
 .scale-fade {

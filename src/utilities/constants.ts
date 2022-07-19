@@ -1,6 +1,4 @@
 
-
-
 export const paths = {
   alarm: "/alarm",
   "world clock": "/world-clock",
@@ -8,10 +6,12 @@ export const paths = {
   timer: "/timer"
 }
 
+
 export const timeBreakPoints = {
   day: 8.64e+7,
   hour: 3.6e+6,
   minute: 60000,
+  second: 1000
 };
 
 export const scaleAnimationsDuration = 150;

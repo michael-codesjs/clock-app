@@ -3,7 +3,7 @@ import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import { InformationCircleIcon } from "@heroicons/react/solid"
 import { ToastStatus } from "../../types/enums";
 import ScaleFade from "../transitions/scale-fade";
-import { scaleAnimationsDuration } from "../../constants";
+import { scaleAnimationsDuration } from "../../utilities/constants";
 import { useSpring, animated } from "react-spring";
 
 interface ToastInstanceProps {
