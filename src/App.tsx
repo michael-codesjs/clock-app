@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Box,
+  Spacer,
   Stack,
   useColorModeValue,
   VStack
@@ -19,8 +20,8 @@ export default function App() {
         md: "row"
       }}
       bg={useColorModeValue("light-background", "dark-background")}
-      width={"100%"}
-      height={"100%"}
+      width={"100vw"}
+      height={"100vh"}
       spacing={5}
       p={{
         base: 0,
