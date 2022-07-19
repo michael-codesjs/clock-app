@@ -1,4 +1,6 @@
+import { Button, HStack, Text, VStack } from "@chakra-ui/react";
 import React from "react"
+
 
 interface DaysInputProps {
   state: [Array<number>, React.Dispatch<React.SetStateAction<Array<number>>>]
@@ -30,11 +32,22 @@ export default function DaysInput({ state }: DaysInputProps) {
   }
 
   return (
-    <div className={"w-full flex flex-col space-y-2"}>
-      <div className="flex items-center justify-between">
-        <p className="text-sm"> {selectedDaysDisplay} </p>
-      </div>
-      <div className="flex justify-between items-center w-full">
+    <VStack
+      spacing={3}
+      width={"full"}
+      align={"start"}
+    >
+
+      <Text
+        fontSize={"sm"}
+      > {selectedDaysDisplay} </Text>
+
+      <HStack
+        align={"center"}
+        justify={"space-between"}
+        width={"full"}
+        spacing={0}
+      >
         {
           /* days in wweek */
           Array(7).fill(null).map((...loopValues) => {
@@ -43,20 +56,39 @@ export default function DaysInput({ state }: DaysInputProps) {
             const isSelected = Boolean(selectedDays.indexOf(dayInWeek) + 1);
             const isTomorrow = !selectedDays.length && tomorrow.getDay() === dayInWeek;
             return (
-              <button
+              <Button
                 key={dayInWeek}
-                className={"h-6 px-2 flex items-center justify-center text-gray-500 text-[11px] rounded-full " + (isSelected ? "bg-purple-100 text-purple-500 font-medium" : isTomorrow ? "border-2 border-purple-200" : "")}
+                h={6}
+                px={2}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                textColor={isSelected ? "purple.500" : "gray.500"}
+                backgroundColor={isSelected ? "purple.100" : "transparent" }
+                borderWidth={isTomorrow ? 1 : 0}
+                borderColor={"purple.500"}
+                fontSize={"11px"}
+                fontWeight={"medium"}
+                rounded={"full"}
+                _active={{
+                  outline: 0,
+                  border: "none"
+                }}
+                _focus={{
+                  outline: 0,
+                  border: "none"
+                }}
                 onClick={
                   () => {
                     if (!isSelected) setSelectedDays(selectedDays => [...selectedDays, dayInWeek]);
                     else setSelectedDays(selectedDays => selectedDays.filter(day => day !== dayInWeek));
                   }
                 }
-              > {dayName} </button>
+              > {dayName} </Button>
             )
           })
         }
-      </div>
-    </div>
+      </HStack>
+    </VStack>
   )
 }

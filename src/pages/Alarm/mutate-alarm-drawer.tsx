@@ -1,9 +1,12 @@
-import { Box, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Heading, HStack, Text, useBreakpointValue, useColorModeValue, VStack } from "@chakra-ui/react";
+import { Box, Button, Divider, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Heading, HStack, Spacer, Text, useBreakpointValue, useColorModeValue, useDisclosure, VStack } from "@chakra-ui/react";
 import { useDrag, UserDragConfig } from "@use-gesture/react";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { useRecoilState, useRecoilValue } from "recoil";
+import { NullSnoozeSettings, SnoozeSettings } from "../../classes/alarm/snooze-settings";
+import Toggle from "../../components/buttons/toggle";
+import DaysInput from "../../components/days-input";
 import NumberScrollInput from "../../components/number-scroll-input";
 import { mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../recoil/atoms";
 
@@ -16,6 +19,10 @@ export default function MutateAlarmDrawer() {
   // alarm properties states
   const [hour, setHour] = useState(selectedAlarm.time.hour);
   const [minute, setMinute] = useState(selectedAlarm.time.minute);
+  const [days, setDays] = useState(selectedAlarm.days);
+  const [snooze, setSnooze] = useState<SnoozeSettings | NullSnoozeSettings>(selectedAlarm.snooze);
+  const shouldSnooze = useState(true);
+  const snoozeSettingsDisclosure = useDisclosure();
 
 
   const navigate = useNavigate();
@@ -30,7 +37,7 @@ export default function MutateAlarmDrawer() {
     x: 0, y: 0
   }));
 
-  const maxDrag = 250;
+  const maxDrag = 400;
 
   const dragOptions: UserDragConfig = {
     axis: useBreakpointValue({ base: "y", md: "x" }),
@@ -46,7 +53,7 @@ export default function MutateAlarmDrawer() {
 
   const bindDrag = useDrag((state) => {
     const { down, offset: [mx, my], last } = state;
-    const contraint = (maxDrag/1.5);
+    const contraint = (maxDrag / 1.5);
     if (last && (my > contraint || mx > contraint)) {
       springAPI.start({ x: 0, y: 0 });
       return onClose();
@@ -60,7 +67,7 @@ export default function MutateAlarmDrawer() {
 
   const onClose = () => navigate(-1);
 
-  const drawerHeaderDragIndicatorLinesBackgroundColor = useColorModeValue("gray.200", "gray.700");
+  const drawerHeaderDragIndicatorLinesBackgroundColor = useColorModeValue("gray.300", "gray.600");
 
   return (
     <Drawer
@@ -74,7 +81,7 @@ export default function MutateAlarmDrawer() {
 
       <DrawerContent
         borderTopRadius={{
-          base: "32px",
+          base: "40px",
           md: "0"
         }}
         p={0}
@@ -94,13 +101,14 @@ export default function MutateAlarmDrawer() {
             ...styles,
             height: "100%",
             borderRadius: "inherit",
-            backgroundColor: useColorModeValue("white", "gray.800")
+            backgroundColor: useColorModeValue("white", "rgb(26, 32, 44)")
           }}
         >
 
           <DrawerHeader
             as={VStack}
             spacing={4}
+            pt={10}
             align={"center"}
             {...bindDrag()}
           >
@@ -128,17 +136,16 @@ export default function MutateAlarmDrawer() {
             </VStack>
 
             <Heading
-              fontSize={"lg"}
+              fontSize={"xl"}
               fontWeight={"normal"}
-              color={useColorModeValue("gray.600", "gray.100")}
+              color={useColorModeValue("gray.700", "gray.300")}
             > {isAdd ? "Set" : "Edit"} Alarm </Heading>
 
           </DrawerHeader>
 
           <DrawerBody
             as={VStack}
-            spacing={4}
-            py={10}
+            spacing={5}
             width={{
               base: "full",
               md: "auto"
@@ -159,7 +166,76 @@ export default function MutateAlarmDrawer() {
               <NumberScrollInput name={""} max={60} state={[minute, setMinute]} />
             </HStack>
 
+            <Divider />
+
+            {/* ALARM SETTINGS */}
+            <VStack
+              height={"full"}
+              p={0}
+              width={"full"}
+              overflowY={"scroll"}
+            >
+
+              {/* days input */}
+              <DaysInput state={[days, setDays]} />
+
+              {/* snooze settings */}
+
+              <VStack
+                spacing={2}
+                width={"full"}
+              >
+                <HStack
+                  py={2}
+                  width={"full"}
+                  align={"start"}
+                >
+
+                  <VStack
+                    cursor={"pointer"}
+                    spacing={0}
+                    align={"start"}
+                    onClick={() => {
+                      if (!shouldSnooze[0] && !snoozeSettingsDisclosure.isOpen) shouldSnooze[1](true);
+                      snoozeSettingsDisclosure.onToggle();
+                    }}
+                  >
+                    <Text fontSize="sm"> Snooze </Text>
+                    <Text
+                      fontSize={"xs"}
+                      color={shouldSnooze ? "purple.500" : "gray.400"}
+                    >
+                      { shouldSnooze[0] ? <span> {snooze && snooze.interval} minutes {snooze && snooze.repeat} times </span> : "off" }
+                    </Text>
+                  </VStack>
+                  <Spacer />
+                  <Toggle state={shouldSnooze} />
+                </HStack>
+
+              </VStack>
+            </VStack>
+
+
           </DrawerBody>
+
+          <Divider />
+
+          <DrawerFooter
+            as={HStack}
+            spacing={10}
+            pt={8}
+          >
+            <Button
+              fontSize={"xs"}
+              color={useColorModeValue("gray.400", "gray.400")}
+              variant={"ghost"}
+            > Close </Button>
+            <Button
+              width={"full"}
+              fontSize={"xs"}
+              colorScheme={"yellow"}
+            > Set Alarm </Button>
+          </DrawerFooter>
         </animated.div>
       </DrawerContent>
 

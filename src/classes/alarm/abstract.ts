@@ -11,7 +11,7 @@ export abstract class AbstractAlarm implements InterfaceAlarm {
   created: Date;
   days: Array<number>;
   time: { hour: number, minute: number };
-  snooze: SnoozeSettings | null;
+  snooze: SnoozeSettings | NullSnoozeSettings;
   onceOff: boolean;
 
 
