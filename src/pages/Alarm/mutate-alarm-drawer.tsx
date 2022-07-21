@@ -1,6 +1,6 @@
-import { Box, Button, Divider, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Heading, HStack, Spacer, Text, useBreakpointValue, useColorModeValue, useDisclosure, VStack } from "@chakra-ui/react";
+import { Box, Button, Divider, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Heading, HStack, Spacer, Text, useBreakpointValue, useColorModeValue, useDisclosure, VStack, useDimensions } from "@chakra-ui/react";
 import { useDrag, UserDragConfig } from "@use-gesture/react";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -29,37 +29,40 @@ export default function MutateAlarmDrawer() {
   const { action } = useParams();
   const isAdd = action === "add";
 
+  const drawerContentRef = useRef<null | HTMLElement>(null);
+  const drawerContentDimensions = useDimensions(drawerContentRef);
+
   /* CLOSE BY DRAGGING FUNCTIONALITY */
 
-  // SPRING 
+  /* utility vars */
+  const maxDrag = 400;
+  const isMobileDevice  = useBreakpointValue({ base: true, md: false });
 
+  // SPRINGS
   const [styles, springAPI] = useSpring(() => ({
     x: 0, y: 0
   }));
 
-  const maxDrag = 400;
-
   const dragOptions: UserDragConfig = {
-    axis: useBreakpointValue({ base: "y", md: "x" }),
-    bounds: useBreakpointValue({
-      base: { top: 0, bottom: maxDrag },
-      md: { left: 0, right: maxDrag }
-    }),
-    rubberband: false,
+    axis: isMobileDevice ? "y" : "x",
+    bounds: isMobileDevice ? { top: 0, bottom: maxDrag } : { left: 0, right: maxDrag },
+    rubberband: true,
     pointer: {
       touch: true,
     },
   }
 
   const bindDrag = useDrag((state) => {
-    const { down, offset: [mx, my], last } = state;
-    const contraint = (maxDrag / 1.5);
-    if (last && (my > contraint || mx > contraint)) {
-      springAPI.start({ x: 0, y: 0 });
-      return onClose();
-    }
-    springAPI.start({ x: down ? mx : 0, y: down ? my : 0, immediate: false });
+    const { down, swipe, offset: [mx, my] } = state;
+    // close drawer when the users 
+    if ((my > maxDrag || mx > maxDrag)) return onClose();
+    else springAPI.start({ x: down ? mx : 0, y: down ? my : 0, immediate: false });
   }, dragOptions);
+
+  // reset spring whenever the drawers state change;
+  useEffect(() => {
+    springAPI.set({ x: 0, y: 0 });
+  },[isOpen]);
 
   /* END */
 
@@ -80,6 +83,7 @@ export default function MutateAlarmDrawer() {
       <DrawerOverlay onClick={onClose} />
 
       <DrawerContent
+        ref={drawerContentRef}
         borderTopRadius={{
           base: "40px",
           md: "0"
@@ -139,6 +143,7 @@ export default function MutateAlarmDrawer() {
               fontSize={"xl"}
               fontWeight={"normal"}
               color={useColorModeValue("gray.700", "gray.300")}
+              userSelect={"none"}
             > {isAdd ? "Set" : "Edit"} Alarm </Heading>
 
           </DrawerHeader>
