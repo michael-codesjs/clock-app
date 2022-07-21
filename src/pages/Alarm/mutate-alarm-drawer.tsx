@@ -35,7 +35,7 @@ export default function MutateAlarmDrawer() {
   /* CLOSE BY DRAGGING FUNCTIONALITY */
 
   /* utility vars */
-  const maxDrag = 400;
+  const maxDrag = 200;
   const isMobileDevice  = useBreakpointValue({ base: true, md: false });
 
   // SPRINGS
@@ -46,7 +46,6 @@ export default function MutateAlarmDrawer() {
   const dragOptions: UserDragConfig = {
     axis: isMobileDevice ? "y" : "x",
     bounds: isMobileDevice ? { top: 0, bottom: maxDrag } : { left: 0, right: maxDrag },
-    rubberband: true,
     pointer: {
       touch: true,
     },
@@ -54,14 +53,15 @@ export default function MutateAlarmDrawer() {
 
   const bindDrag = useDrag((state) => {
     const { down, last, offset: [mx, my] } = state;
-    // close drawer when the users 
-    if (last && (my > maxDrag || mx > maxDrag)) return onClose();
-    else springAPI.start({ x: down ? mx : 0, y: down ? my : 0, immediate: false });
+    // close drawer when the user drags the drawer pass the constraints.
+    const constraint = maxDrag - 20;
+    if (last && (my > constraint || mx > constraint)) return onClose();
+    springAPI.start({ x: down ? mx : 0, y: down ? my : 0, immediate: false });
   }, dragOptions);
 
-  // reset spring whenever the drawers state change;
+  // reset spring whenever the drawer is opened.
   useEffect(() => {
-    springAPI.set({ x: 0, y: 0 });
+    if(isOpen) springAPI.set({ x: 0, y: 0 });
   },[isOpen]);
 
   /* END */
