@@ -53,9 +53,9 @@ export default function MutateAlarmDrawer() {
   }
 
   const bindDrag = useDrag((state) => {
-    const { down, swipe, offset: [mx, my] } = state;
+    const { down, last, offset: [mx, my] } = state;
     // close drawer when the users 
-    if ((my > maxDrag || mx > maxDrag)) return onClose();
+    if (last && (my > maxDrag || mx > maxDrag)) return onClose();
     else springAPI.start({ x: down ? mx : 0, y: down ? my : 0, immediate: false });
   }, dragOptions);
 
