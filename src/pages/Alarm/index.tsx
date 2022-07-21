@@ -1,9 +1,10 @@
 import { HStack, Icon, IconButton, Spacer, Text, useColorModeValue, useForceUpdate, VStack } from "@chakra-ui/react";
 import React, { startTransition, useEffect, useMemo } from "react";
 import { IoMdAdd } from "react-icons/io";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { alarmsAtom, mutateAlarmDrawerIsOpenAtom } from "../../recoil/atoms";
+import { NullAlarm } from "../../classes/alarm";
+import { alarmsAtom, mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../recoil/atoms";
 import { paths } from "../../utilities/constants";
 import { getNextAlarmToRing, getTimeFromNow } from "../../utilities/functions";
 import Alarm from "./alarm";
@@ -12,7 +13,8 @@ import MutateAlarmDrawer from "./mutate-alarm-drawer";
 
 export default function Alarms() {
 
-  const alarms = useRecoilValue(alarmsAtom);
+  const [alarms, setAlarms] = useRecoilState(alarmsAtom);
+  const [selectedAlarm, setSelelectedAlarm] = useRecoilState(selectedAlarmAtom);
   const [mutateAlarmDrawerIsOpen, setMutateDrawerIsOpen] = useRecoilState(mutateAlarmDrawerIsOpenAtom);
 
   /* NEXT TO RING ALARM FOR THE HEADER */
@@ -36,14 +38,24 @@ export default function Alarms() {
 
   /* HANDLE STATE OF THE MUTATE_ALARM_DRAWER */
 
+  const navigate = useNavigate();
   const { pathname } = useLocation();
-
   const { action } = useParams();
 
   useEffect(() => {
     if (action && (action === "add" || action === "edit") && !mutateAlarmDrawerIsOpen) setMutateDrawerIsOpen(true);
     else if (!action || (action !== "add" && action !== "edit") && mutateAlarmDrawerIsOpen) setMutateDrawerIsOpen(false)
-  }, [pathname])
+  }, [pathname]);
+
+  const navigateToMutateAlarm:React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    startTransition(() => {
+      const alarm = new NullAlarm();
+      setSelelectedAlarm(alarm);
+      setAlarms(alarms => [alarm,...alarms]);
+    });
+    navigate(paths.alarm+"/add");
+  }
 
   return (
     <VStack
@@ -99,7 +111,8 @@ export default function Alarms() {
           <Spacer />
           <IconButton
             as={Link}
-            to={paths.alarm + "/add"}
+            to={paths.alarm+"/add"}
+            onClick={navigateToMutateAlarm}
             aria-label="set-alarm"
             icon={<Icon as={IoMdAdd} w={6} h={6} color={useColorModeValue("gray.900", "white")} />}
           />

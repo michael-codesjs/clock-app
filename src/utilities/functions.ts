@@ -5,6 +5,21 @@ export function unStringfy<T>(jsonString: string): T {
   return JSON.parse(jsonString) as T;
 }
 
+
+/* ARRAY FUNCTIONS */
+
+export function filterMap<T>(array:Array<T>, condition:(item:T) => boolean) {
+  const finalArray = [];
+  array.forEach(item => {
+    if(condition(item)) finalArray.push(item);
+  })
+}
+
+/* END */
+
+
+/* TIME RELATED */
+
 export function getTomorrowsDate() {
   const date = new Date();
   date.setDate(date.getDate() + 1);
@@ -47,3 +62,6 @@ export function getNextAlarmToRing(alarms: Array<Alarm>) {
   });
   return nextAlarm;
 }
+
+/* END */
+

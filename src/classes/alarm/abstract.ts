@@ -29,13 +29,14 @@ export abstract class AbstractAlarm implements InterfaceAlarm {
 
   // ABSTRACT METHODS
 
-  // ALARM 
+  abstract mutateSelfTo(alarms:Array<Alarm | NullAlarm>) : Array<Alarm | NullAlarm>
 
   // deletes itself from an array of alarms if it exists in that array
   deleteAlarmFrom(alarms:(Array<Alarm>)) {
     const that = this;
     return alarms.filter((alarm) => alarm.created !== that.created);
   }
+
 
   // mutates a supplied instance Date time to that of the alarm and then returns it. 
   setTimeOfDateToTimeOfAlarm(date = new Date()) {

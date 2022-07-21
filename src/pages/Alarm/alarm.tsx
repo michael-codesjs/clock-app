@@ -5,10 +5,12 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import Toggle from "../../components/buttons/toggle";
 import SelectedDays from "../../components/days-input/selected";
 import { alarmsAtom } from "../../recoil/atoms";
-import { Alarm as AlarmClass } from "../../classes/alarm";
+import { Alarm as AlarmClass, NullAlarm } from "../../classes/alarm";
+import { Icon, IconButton } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 interface AlarmProps {
-  alarm: AlarmClass
+  alarm: AlarmClass | NullAlarm
 }
 
 export default function Alarm({ alarm }: AlarmProps) {
@@ -71,8 +73,8 @@ export default function Alarm({ alarm }: AlarmProps) {
           },
           // when this last spring animation is done, delete the alarm from the alarmsAtom;
           onResolve: () => {
-            const alarmsWithThisDeleted = alarm.deleteAlarmFrom(alarms);
-            setAlarms(alarmsWithThisDeleted);
+            // const alarmsWithThisDeleted = alarm.deleteAlarmFrom(alarms);
+            // setAlarms(alarmsWithThisDeleted);
           }
         })
       }
@@ -95,15 +97,31 @@ export default function Alarm({ alarm }: AlarmProps) {
 
   return (
     <animated.div
-      className="flex items-center w-full min-h-fit cursor-grab"
+      className="flex items-center w-full select-none cursor-grab"
       style={containerSpringStates}
       {...bindDrag()}
     >
 
       <animated.button
-        style={{ width, fontWeight, opacity: containerSpringStates.deleteTextOpacity, color: "red", textAlign: "center" }}
-        className={"text-xs"}
-      > delete </animated.button>
+        style={{
+          width,
+          fontWeight,
+          opacity: containerSpringStates.deleteTextOpacity,
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+        className={"text-xs flex items-center justify-center"}
+      >
+        <IconButton
+          aria-label={"delete-icon"}
+          size={"sm"}
+          rounded={"full"}
+          colorScheme={"red"}
+          icon={<Icon as={DeleteIcon} />}
+        />
+      </animated.button>
 
       <animated.div
         className="w-full h-full z-10 p-5 flex space-x-5 items-center shadow-sm rounded-xl bg-white"

@@ -22,7 +22,7 @@ const alarmLocalPersistEffect = localPersistEffect({
 });
 
 // atom that stores all the alarms created by a user
-export const alarmsAtom = atom<Array<Alarm>>({
+export const alarmsAtom = atom<Array<Alarm | NullAlarm>>({
   key: "alarms",
   default: [],
   effects: [

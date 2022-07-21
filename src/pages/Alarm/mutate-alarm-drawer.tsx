@@ -1,36 +1,55 @@
-import { Box, Button, Divider, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Heading, HStack, Spacer, Text, useBreakpointValue, useColorModeValue, useDisclosure, VStack, useDimensions } from "@chakra-ui/react";
+import {
+  Box,
+  Divider,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  Heading,
+  HStack,
+  Spacer,
+  Text,
+  useBreakpointValue,
+  useColorModeValue,
+  useDisclosure,
+  VStack
+} from "@chakra-ui/react";
 import { useDrag, UserDragConfig } from "@use-gesture/react";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { NullSnoozeSettings, SnoozeSettings } from "../../classes/alarm/snooze-settings";
+import { ButtonPrimary } from "../../components/buttons/solid";
 import Toggle from "../../components/buttons/toggle";
 import DaysInput from "../../components/days-input";
 import NumberScrollInput from "../../components/number-scroll-input";
-import { mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../recoil/atoms";
+import { alarmsAtom, mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../recoil/atoms";
 
 
 export default function MutateAlarmDrawer() {
 
   const [isOpen, setIsOpen] = useRecoilState(mutateAlarmDrawerIsOpenAtom);
   const selectedAlarm = useRecoilValue(selectedAlarmAtom);
+  const [alarms, setAlarms] = useRecoilState(alarmsAtom);
 
   // alarm properties states
   const [hour, setHour] = useState(selectedAlarm.time.hour);
   const [minute, setMinute] = useState(selectedAlarm.time.minute);
   const [days, setDays] = useState(selectedAlarm.days);
   const [snooze, setSnooze] = useState<SnoozeSettings | NullSnoozeSettings>(selectedAlarm.snooze);
-  const shouldSnooze = useState(true);
+  const shouldSnooze = useState(snooze instanceof SnoozeSettings);
   const snoozeSettingsDisclosure = useDisclosure();
 
+  const setAlarmButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const navigate = useNavigate();
+  const onClose = () => navigate(-1);
   const { action } = useParams();
   const isAdd = action === "add";
-
-  const drawerContentRef = useRef<null | HTMLElement>(null);
-  const drawerContentDimensions = useDimensions(drawerContentRef);
+  
 
   /* CLOSE BY DRAGGING FUNCTIONALITY */
 
@@ -39,9 +58,7 @@ export default function MutateAlarmDrawer() {
   const isMobileDevice  = useBreakpointValue({ base: true, md: false });
 
   // SPRINGS
-  const [styles, springAPI] = useSpring(() => ({
-    x: 0, y: 0
-  }));
+  const [styles, springAPI] = useSpring(() => ({ x: 0, y: 0 }));
 
   const dragOptions: UserDragConfig = {
     axis: isMobileDevice ? "y" : "x",
@@ -66,24 +83,37 @@ export default function MutateAlarmDrawer() {
 
   /* END */
 
+
+  /* FUNCTIONALITY */
+
+  useEffect(() => {
+    if(isAdd) {
+      // setAlarms(selectedAlarm)
+    }
+  })
+
+  function mutate() {
+    setAlarms(selectedAlarm.mutateSelfTo(alarms));
+  }
+
+  /* END */
+
   const placement = useBreakpointValue({ base: "bottom", md: "right" }) as "bottom" | "right";
-
-  const onClose = () => navigate(-1);
-
   const drawerHeaderDragIndicatorLinesBackgroundColor = useColorModeValue("gray.300", "gray.600");
 
   return (
+
     <Drawer
       isOpen={isOpen}
       onClose={onClose}
       placement={placement}
-
+      initialFocusRef={setAlarmButtonRef}
+      size={"md"}
     >
 
       <DrawerOverlay onClick={onClose} />
 
       <DrawerContent
-        ref={drawerContentRef}
         borderTopRadius={{
           base: "40px",
           md: "0"
@@ -155,6 +185,7 @@ export default function MutateAlarmDrawer() {
               base: "full",
               md: "auto"
             }}
+            overflowY={"scroll"}
           >
 
             { /* scroll input group */}
@@ -193,7 +224,7 @@ export default function MutateAlarmDrawer() {
                 <HStack
                   py={2}
                   width={"full"}
-                  align={"start"}
+                  align={"center"}
                 >
 
                   <VStack
@@ -230,16 +261,10 @@ export default function MutateAlarmDrawer() {
             spacing={10}
             pt={8}
           >
-            <Button
-              fontSize={"xs"}
-              color={useColorModeValue("gray.400", "gray.400")}
-              variant={"ghost"}
-            > Close </Button>
-            <Button
+            <ButtonPrimary
+              ref={setAlarmButtonRef}
               width={"full"}
-              fontSize={"xs"}
-              colorScheme={"yellow"}
-            > Set Alarm </Button>
+            > Save </ButtonPrimary>
           </DrawerFooter>
         </animated.div>
       </DrawerContent>
