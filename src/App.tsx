@@ -1,14 +1,9 @@
-import React from 'react';
 import {
-  Box,
-  Spacer,
-  Stack,
-  useColorModeValue,
-  VStack
+  Box, Stack,
+  useColorModeValue
 } from "@chakra-ui/react";
-import Navigation from './components/navigation';
-import Toast from './components/toast';
-import TriggerAlarmDisplay from './components/triggered-alarm-display';
+import React from "react";
+import Navigation from './layout/navigation';
 import Routes from './Routes';
 
 export default function App() {

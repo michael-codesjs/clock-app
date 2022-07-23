@@ -26,7 +26,7 @@ import { ButtonPrimary } from "../../../components/buttons/solid";
 import Toggle from "../../../components/buttons/toggle";
 import DaysInput from "../../../components/days-input";
 import NumberScrollInput from "../../../components/number-scroll-input";
-import { alarmsAtom, mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../../recoil/atoms";
+import { alarmsAtom, mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../../data/atoms";
 
 
 export function MutateAlarmDrawer() {

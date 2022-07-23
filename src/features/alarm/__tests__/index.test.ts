@@ -1,4 +1,4 @@
-import Alarm  from "../features/alarm/model/alarm";
+import { Alarm }  from "../model/alarm";
 
 describe("Alarms", () => {
 
@@ -50,10 +50,8 @@ describe("Alarms", () => {
   });
 
   test("alarm can be deleted", () => {
-    const beforeDeleteLength = alarms.length;
-    alarm.deleteAlarm(setAlarms);
-    expect(alarms.length).toBeLessThan(beforeDeleteLength);
-    expect(alarms.indexOf(alarm)).toBe(-1);
+    const newAlarms = alarm.deleteSelfFrom(alarms);
+    expect(newAlarms.indexOf(alarm)).toBeLessThan(0);
   })
 
 })

@@ -12,6 +12,7 @@ export default function () {
       <Route path={paths.alarm} element={<Alarm />}>
         <Route path={":action"} />
       </Route>
+      <Route path={"*"} element={<Navigate to={paths.alarm} />} />
     </Routes>
   )
 }

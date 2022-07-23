@@ -3,14 +3,7 @@ import { AbstractAlarm } from "../features/alarm";
 // import { AbstractAlarm } from "../features/alarm";
 import { Alarm } from "../features/alarm/model/alarm";
 import { NullAlarm } from "../features/alarm/model/null-alarm";
-import { NullSnoozeSettings } from "../features/alarm/model/snooze-settings";
-import { ToastInstance } from "../types/interfaces";
 import { localPersistEffect } from "./atom-effects";
-
-export const incomingToastAtom = atom<ToastInstance | null>({
-  key: "toast-state",
-  default: null
-});
 
 /* ALARM RELATED ATOMS */
 
