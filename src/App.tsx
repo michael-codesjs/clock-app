@@ -21,7 +21,7 @@ export default function App() {
       }}
       bg={useColorModeValue("light-background", "dark-background")}
       width={"100vw"}
-      height={"100vh"}
+      height={"100%"}
       spacing={5}
       p={{
         base: 0,
