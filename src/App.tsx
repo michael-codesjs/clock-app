@@ -34,7 +34,7 @@ export default function App() {
         width={"full"}
         height={"full"}
         p={5}
-        pb={0}
+        pb={24}
       >
         <Routes />
       </Box>
