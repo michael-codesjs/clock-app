@@ -2,7 +2,7 @@
 import { Stack, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
 import { paths } from "../../utilities/constants";
-import ColorModeSwitcher from "../buttons/color-mode-switcher";
+import ColorModeSwitcher from "../../components/buttons/color-mode-switcher";
 import NavigationItem from "./item";
 
 export default function Navigation(): React.ReactElement {

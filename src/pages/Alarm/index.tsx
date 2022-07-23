@@ -5,7 +5,7 @@ import { IoMdAdd } from "react-icons/io";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { NullAlarm, MutateAlarmDrawer } from "../../features/alarm";
-import { alarmsAtom, mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../recoil/atoms";
+import { alarmsAtom, mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../data/atoms";
 import { paths } from "../../utilities/constants";
 import { getNextAlarmToRing, getTimeFromNow } from "../../utilities/functions";
 

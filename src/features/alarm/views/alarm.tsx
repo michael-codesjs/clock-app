@@ -4,7 +4,7 @@ import { useSpring, animated } from "react-spring";
 import { useRecoilState } from "recoil";
 import Toggle from "../../../components/buttons/toggle";
 import SelectedDays from "../../../components/days-input/selected";
-import { alarmsAtom } from "../../../recoil/atoms";
+import { alarmsAtom } from "../../../data/atoms";
 import { Alarm as AlarmClass } from "../model/alarm";
 import { NullAlarm as NullAlarmClass } from "../model/null-alarm"
 import { Box, HStack, Icon, IconButton, ScaleFade, Text, useColorModeValue } from "@chakra-ui/react";
