@@ -13,10 +13,7 @@ export default function Navigation(): React.ReactElement {
         base: 2,
         md: 1
       }}
-      position={{
-        base: "fixed",
-        md: "relative"
-      }}
+      position={"relative"}
       bottom={"0px"}
       direction={{
         base: "row",

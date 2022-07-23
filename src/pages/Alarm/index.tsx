@@ -127,7 +127,10 @@ export default function Alarms() {
         ref={alarmsContainerRef}
         spacing={0}
         width={"full"}
+        height={"full"}
+        position={"relative"}
         overflowY={"scroll"}
+        pb={40}
       >
         {alarms.map((alarm, positionInSortedList) => {
           const View = alarm.getView({ positionInSortedList, containerDimensions: alarmsContainerDimensions });
