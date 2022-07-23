@@ -21,7 +21,7 @@ export default function App() {
       }}
       bg={useColorModeValue("light-background", "dark-background")}
       width={"100vw"}
-      height={"100%"}
+      height={"100vh"}
       spacing={5}
       p={{
         base: 0,
@@ -39,6 +39,7 @@ export default function App() {
         width={"full"}
         height={"full"}
         p={5}
+        pb={0}
       >
         <Routes />
       </Box>
