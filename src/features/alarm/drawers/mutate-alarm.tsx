@@ -21,15 +21,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { NullSnoozeSettings, SnoozeSettings } from "../../classes/alarm/snooze-settings";
-import { ButtonPrimary } from "../../components/buttons/solid";
-import Toggle from "../../components/buttons/toggle";
-import DaysInput from "../../components/days-input";
-import NumberScrollInput from "../../components/number-scroll-input";
-import { alarmsAtom, mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../recoil/atoms";
+import { NullSnoozeSettings, SnoozeSettings } from "../model/snooze-settings";
+import { ButtonPrimary } from "../../../components/buttons/solid";
+import Toggle from "../../../components/buttons/toggle";
+import DaysInput from "../../../components/days-input";
+import NumberScrollInput from "../../../components/number-scroll-input";
+import { alarmsAtom, mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../../recoil/atoms";
 
 
-export default function MutateAlarmDrawer() {
+export function MutateAlarmDrawer() {
 
   const [isOpen, setIsOpen] = useRecoilState(mutateAlarmDrawerIsOpenAtom);
   const selectedAlarm = useRecoilValue(selectedAlarmAtom);
@@ -125,7 +125,7 @@ export default function MutateAlarmDrawer() {
           md: "100vh"
         }}
         maxH={{
-          base: "90vh",
+          base: "40vh",
           md: "100vh"
         }}
         bg={"none"}

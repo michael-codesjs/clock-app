@@ -1,38 +1,51 @@
-import { Alarm, NullAlarm } from ".";
-import { InterfaceAlarm } from "../../types/interfaces";
+import React, { ReactNode } from "react";
+import { BoxModel } from "@chakra-ui/utils";
+import { InterfaceAlarm } from "../../../types/interfaces";
 import { NullSnoozeSettings, SnoozeSettings } from "./snooze-settings";
+import { AlarmViewProps } from "../types";
 
 
 export abstract class AbstractAlarm implements InterfaceAlarm {
 
   // alarm properties
   name: string;
+  defaultName: string;
   enabled: boolean;
   created: Date;
   days: Array<number>;
   time: { hour: number, minute: number };
   snooze: SnoozeSettings | NullSnoozeSettings;
   onceOff: boolean;
+  isNull: boolean;
+  index: number;
 
+  // static
+  private static count = 0;
 
-  constructor({ name, enabled, created, days, time, snooze, onceOff }: InterfaceAlarm) {
+  constructor({ name, enabled, created, days, time, snooze, onceOff, isNull }: InterfaceAlarm & { isNull: boolean }) {
 
     this.name = name;
+    this.index = AbstractAlarm.count++;
+    this.defaultName = "Alarm "+this.index;
     this.enabled = enabled;
     this.created = created || new Date();
     this.days = days;
     this.time = time;
     this.snooze = snooze ? new SnoozeSettings(snooze) : new NullSnoozeSettings();
     this.onceOff = onceOff;
-
+    this.isNull = isNull;
   }
 
-  // ABSTRACT METHODS
+  /* ABSTRACT METHODS */
 
-  abstract mutateSelfTo(alarms:Array<Alarm | NullAlarm>) : Array<Alarm | NullAlarm>
+  abstract startAlarmCycle(): any
+  abstract mutateSelfTo(alarms:Array<AbstractAlarm>) : Array<AbstractAlarm>
+  abstract getView(props:AlarmViewProps) : ReactNode
+
+  /* DEFINITE METHODS */
 
   // deletes itself from an array of alarms if it exists in that array
-  deleteAlarmFrom(alarms:(Array<Alarm>)) {
+  deleteSelfFrom(alarms:(Array<AbstractAlarm>)) {
     const that = this;
     return alarms.filter((alarm) => alarm.created !== that.created);
   }

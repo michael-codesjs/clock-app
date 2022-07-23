@@ -49,6 +49,7 @@ export default function Navigation(): React.ReactElement {
         base: "1px",
         md: 0
       }}
+      zIndex={100}
       borderTopColor={useColorModeValue("gray.100","gray.900")}
       backgroundColor={useColorModeValue("white","gray.900")}
     >

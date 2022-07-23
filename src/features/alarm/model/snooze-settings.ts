@@ -1,4 +1,4 @@
-import { InterfaceSnoozeSettings } from "../../types/interfaces";
+import { InterfaceSnoozeSettings } from "../../../types/interfaces";
 
 
 export class SnoozeSettings implements InterfaceSnoozeSettings {

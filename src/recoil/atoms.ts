@@ -1,7 +1,10 @@
 import { atom } from "recoil";
-import { Alarm, NullAlarm } from "../classes/alarm";
-import { NullSnoozeSettings } from "../classes/alarm/snooze-settings";
-import { InterfaceAlarm, ToastInstance } from "../types/interfaces";
+import { AbstractAlarm } from "../features/alarm";
+// import { AbstractAlarm } from "../features/alarm";
+import { Alarm } from "../features/alarm/model/alarm";
+import { NullAlarm } from "../features/alarm/model/null-alarm";
+import { NullSnoozeSettings } from "../features/alarm/model/snooze-settings";
+import { ToastInstance } from "../types/interfaces";
 import { localPersistEffect } from "./atom-effects";
 
 export const incomingToastAtom = atom<ToastInstance | null>({
@@ -14,15 +17,16 @@ export const incomingToastAtom = atom<ToastInstance | null>({
 // local persist effect that instantiates the alarms gotten form local storage before setting them to the atom
 const alarmLocalPersistEffect = localPersistEffect({
   // instanciate the alarms gotten from local storage.
-  onLocalStorageGetItem: (alarms: Array<InterfaceAlarm> | Alarm) => {
-    const alarmisify = (alarm:any) => new Alarm(alarm);
+  onLocalStorageGetItem: (alarms: Array<AbstractAlarm> | (AbstractAlarm)) => {
+    // alarms = Array.isArray(alarms) ? alarms.filter(alarm => !alarm.isNull) : alarms;
+    const alarmisify = (alarm:any) => alarm.isNull ? new Alarm(alarm) : new Alarm(alarm);
     const instanciatedAlarmInstances = Array.isArray(alarms) ? alarms.map(alarm => alarmisify(alarm)) : alarmisify(alarms);
     return instanciatedAlarmInstances;
   }
 });
 
 // atom that stores all the alarms created by a user
-export const alarmsAtom = atom<Array<Alarm | NullAlarm>>({
+export const alarmsAtom = atom<Array<AbstractAlarm>>({
   key: "alarms",
   default: [],
   effects: [
@@ -31,7 +35,7 @@ export const alarmsAtom = atom<Array<Alarm | NullAlarm>>({
 });
 
 // atom that holds a selected alarm. Selected for many purposes, like editting.
-export const selectedAlarmAtom = atom<Alarm | NullAlarm>({
+export const selectedAlarmAtom = atom<AbstractAlarm>({
   key: "selected-alarm-atom",
   default: new NullAlarm(),
   effects: [

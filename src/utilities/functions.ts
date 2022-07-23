@@ -1,4 +1,5 @@
-import { Alarm } from "../classes/alarm";
+import { AbstractAlarm } from "../features/alarm";
+import { Alarm } from "../features/alarm/model/alarm";
 import { timeBreakPoints } from "./constants";
 
 export function unStringfy<T>(jsonString: string): T {
@@ -47,7 +48,7 @@ export function getTimeFromNow(date: Date, depth = 3) {
 }
 
 // get the next alarm to ring
-export function getNextAlarmToRing(alarms: Array<Alarm>) {
+export function getNextAlarmToRing(alarms: Array<AbstractAlarm>) {
   if (!alarms.length) return null;
   // start at the bottom and work your way up to the top
   let nextAlarm = alarms[0];

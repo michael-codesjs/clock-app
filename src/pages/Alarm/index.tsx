@@ -1,14 +1,13 @@
-import { HStack, Icon, IconButton, Spacer, Text, useColorModeValue, useForceUpdate, VStack } from "@chakra-ui/react";
-import React, { startTransition, useEffect, useMemo } from "react";
+import { HStack, Icon, IconButton, Spacer, Text, useColorModeValue, useDimensions, useForceUpdate, VStack } from "@chakra-ui/react";
+import React, { Fragment, startTransition, useEffect, useMemo, useRef } from "react";
+import { flushSync } from "react-dom";
 import { IoMdAdd } from "react-icons/io";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { NullAlarm } from "../../classes/alarm";
+import { NullAlarm, MutateAlarmDrawer } from "../../features/alarm";
 import { alarmsAtom, mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../recoil/atoms";
 import { paths } from "../../utilities/constants";
 import { getNextAlarmToRing, getTimeFromNow } from "../../utilities/functions";
-import Alarm from "./alarm";
-import MutateAlarmDrawer from "./mutate-alarm-drawer";
 
 
 export default function Alarms() {
@@ -47,15 +46,16 @@ export default function Alarms() {
     else if (!action || (action !== "add" && action !== "edit") && mutateAlarmDrawerIsOpen) setMutateDrawerIsOpen(false)
   }, [pathname]);
 
-  const navigateToMutateAlarm:React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  const navigateToMutateAlarm: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    startTransition(() => {
-      const alarm = new NullAlarm();
-      setSelelectedAlarm(alarm);
-      setAlarms(alarms => [alarm,...alarms]);
-    });
-    navigate(paths.alarm+"/add");
+    const alarm = new NullAlarm();
+    flushSync(() => setSelelectedAlarm(alarm));
+    setAlarms(alarms => [alarm, ...alarms]);
+    navigate(paths.alarm + "/add");
   }
+
+  const alarmsContainerRef = useRef<HTMLDivElement | null>(null);
+  const alarmsContainerDimensions = useDimensions(alarmsContainerRef);
 
   return (
     <VStack
@@ -111,7 +111,7 @@ export default function Alarms() {
           <Spacer />
           <IconButton
             as={Link}
-            to={paths.alarm+"/add"}
+            to={paths.alarm + "/add"}
             onClick={navigateToMutateAlarm}
             aria-label="set-alarm"
             icon={<Icon as={IoMdAdd} w={6} h={6} color={useColorModeValue("gray.900", "white")} />}
@@ -124,17 +124,19 @@ export default function Alarms() {
       {/* ALARMS LIST */}
 
       <VStack
+        ref={alarmsContainerRef}
+        spacing={0}
         width={"full"}
-        spacing={2}
         overflowY={"scroll"}
       >
-        {
-          alarms.map(alarm => {
-            return (
-              <Alarm key={alarm.created.valueOf()} alarm={alarm} />
-            )
-          })
-        }
+        {alarms.map((alarm, positionInSortedList) => {
+          const View = alarm.getView({ positionInSortedList, containerDimensions: alarmsContainerDimensions });
+          return (
+            <Fragment key={alarm.created.valueOf()}>
+              { View }
+            </Fragment>
+          )
+        })}
       </VStack>
 
       {/* MUTATE ALARM DRAWER STATE */}

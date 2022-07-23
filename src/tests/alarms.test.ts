@@ -1,4 +1,4 @@
-import Alarm  from "../classes/alarm";
+import Alarm  from "../features/alarm/model/alarm";
 
 describe("Alarms", () => {
 
