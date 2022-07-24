@@ -1,5 +1,4 @@
-import { AbstractAlarm } from "../features/alarm";
-import { Alarm } from "../features/alarm/model/alarm";
+import { AbstractAlarm, AlarmOptions } from "../features/alarm";
 import { timeBreakPoints } from "./constants";
 
 export function unStringfy<T>(jsonString: string): T {

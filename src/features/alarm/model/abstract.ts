@@ -1,51 +1,73 @@
-import React, { ReactNode } from "react";
-import { BoxModel } from "@chakra-ui/utils";
-import { InterfaceAlarm } from "../../../types/interfaces";
+import { ReactNode } from "react";
+import { AlarmOptions, UpdateAlarmOptions } from "../types";
 import { NullSnoozeSettings, SnoozeSettings } from "./snooze-settings";
-import { AlarmViewProps } from "../types";
+import { AlarmViewProps, Time } from "../types";
 
-
-export abstract class AbstractAlarm implements InterfaceAlarm {
+export abstract class AbstractAlarm {
 
   // alarm properties
-  name: string;
-  defaultName: string;
-  enabled: boolean;
+
+  readonly index: number;
+  isNull: boolean;
   created: Date;
+
+  name: string;
+  enabled: boolean;
+  editted: Date;
   days: Array<number>;
   time: { hour: number, minute: number };
   snooze: SnoozeSettings | NullSnoozeSettings;
   onceOff: boolean;
-  isNull: boolean;
-  index: number;
+
+  abstract TypeofSelf: typeof AbstractAlarm;
+  abstract AbsoluteTypeofSelf: typeof AbstractAlarm;
 
   // static
   private static count = 0;
 
-  constructor({ name, enabled, created, days, time, snooze, onceOff, isNull }: InterfaceAlarm & { isNull: boolean }) {
-
-    this.name = name;
-    this.index = AbstractAlarm.count++;
-    this.defaultName = "Alarm "+this.index;
+  constructor({ name, enabled, created, days, time, snooze, onceOff, isNull, index }: AlarmOptions & { isNull: boolean }) {
+    this.index = index ? index : AbstractAlarm.count++;
+    this.isNull = isNull;
+    this.created = created || new Date()
+    this.name = name || ("Alarm " + this.index);
     this.enabled = enabled;
-    this.created = created || new Date();
+    this.editted = new Date(this.created);
     this.days = days;
     this.time = time;
     this.snooze = snooze ? new SnoozeSettings(snooze) : new NullSnoozeSettings();
-    this.onceOff = onceOff;
-    this.isNull = isNull;
+    this.onceOff = onceOff;;
   }
 
-  /* ABSTRACT METHODS */
+
 
   abstract startAlarmCycle(): any
-  abstract mutateSelfTo(alarms:Array<AbstractAlarm>) : Array<AbstractAlarm>
-  abstract getView(props:AlarmViewProps) : ReactNode
+
+  abstract batchUpdate(options: UpdateAlarmOptions): AbstractAlarm;
+  abstract mutate(options: UpdateAlarmOptions): AbstractAlarm;
+  abstract mutateSelf(options: UpdateAlarmOptions): AbstractAlarm;
+  abstract getView(props: AlarmViewProps): ReactNode
 
   /* DEFINITE METHODS */
+  
+  // mutates itself into list of 
+  to(alarms: Array<AbstractAlarm>): Array<AbstractAlarm> {
+    const self = this;
+    let found = false;
+    const newAlarms = alarms.map(alarm => {
+      if(alarm.index === self.index) {
+        found = true;
+        return self;
+      }
+      return alarm;
+    });
+    if(!found) {
+      newAlarms.unshift(self);
+    }
+    return newAlarms;
+  }
 
   // deletes itself from an array of alarms if it exists in that array
-  deleteSelfFrom(alarms:(Array<AbstractAlarm>)) {
+  deleteSelfFrom(alarms: Array<AbstractAlarm>): Array<AbstractAlarm> {
     const that = this;
     return alarms.filter((alarm) => alarm.created !== that.created);
   }
