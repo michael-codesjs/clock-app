@@ -1,9 +1,8 @@
 import { Box, HStack, Text, useColorModeValue } from "@chakra-ui/react";
-import { animated } from "react-spring";
 import React, { useMemo, useState } from "react";
 import Toggle from "../../../components/buttons/toggle";
 import SelectedDays from "../../../components/days-input/selected";
-import { NullAlarm } from "../model/null-alarm";
+import { NullAlarm } from "../model/alarm";
 import { AlarmViewWrapper } from "./wrapper";
 import { AlarmViewProps } from "../types";
 
@@ -37,7 +36,7 @@ export const NullAlarmView:React.FC<AlarmViewProps & { alarm: NullAlarm }> = (pr
           <Text
             fontSize={"11px"}
             color={useColorModeValue("gray.500", "gray.400")}
-          > {alarm.defaultName} </Text>
+          > {alarm.name} </Text>
         </Box>
 
         <SelectedDays days={alarm.days} />

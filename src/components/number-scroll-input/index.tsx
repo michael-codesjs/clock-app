@@ -22,20 +22,34 @@ enum ScrollDirection {
 
 export default function NumberScrollInput({ name, max, state }: Props) {
 
-    const childNodesHeight = 80; // height of each indivisual div in the scroll input.
+    // TO DO: IMPROVE SCROLL UX
 
     const [value, setValue] = state;
-    const mainRef = useRef<HTMLDivElement | null>(null);
+    const scrollableInputRef = useRef<HTMLDivElement | null>(null);
+    const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-    const bindScroll = useGesture({
-        onScrollEnd: ({ offset: [, my], movement: [, dy] }) => {childNodesHeight
-            const valueFromScroll = Math.round(my / childNodesHeight);
+    // height of each indivisual child in the scroll input.
+    const childNodesHeight = 80;
+
+    const handleScroll: React.UIEventHandler = (e) => {
+        if (scrollTimeout.current) window.clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = setTimeout(onScrollEnd,100);
+    }   
+
+    function onScrollEnd() {
+        let scrollInput = scrollableInputRef.current;
+        if (scrollInput) {
+            const scrollTop = scrollInput.scrollTop;
+            const valueFromScroll = Math.round(scrollTop/childNodesHeight);
             setValue(valueFromScroll);
         }
-    });
+
+    }
 
     useEffect(() => {
-        if (mainRef.current) mainRef.current.scrollTop = value * childNodesHeight;
+        if (scrollableInputRef.current) {
+            scrollableInputRef.current.scrollTop = childNodesHeight * value;
+        }
     }, [value]);
 
     return (
@@ -52,14 +66,13 @@ export default function NumberScrollInput({ name, max, state }: Props) {
             > {name} </Text>
 
             <Flex
-                ref={mainRef}
-                as={animated.div}
+                ref={scrollableInputRef}
+                onScroll={handleScroll}
                 direction={"column"}
                 width={"full"}
                 height={60}
                 overflowY={"scroll"}
                 className={"number-scroll-input " + useColorModeValue("light", "dark")}
-                {...bindScroll()}
             >
                 <Box className={"after"} />
 

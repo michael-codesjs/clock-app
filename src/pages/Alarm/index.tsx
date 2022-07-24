@@ -43,15 +43,20 @@ export default function Alarms() {
 
   useEffect(() => {
     if (action && (action === "add" || action === "edit") && !mutateAlarmDrawerIsOpen) setMutateDrawerIsOpen(true);
-    else if (!action || (action !== "add" && action !== "edit") && mutateAlarmDrawerIsOpen) setMutateDrawerIsOpen(false)
+    else if (!action || (action !== "add" && action !== "edit") && mutateAlarmDrawerIsOpen) {
+      if(selectedAlarm.isNull) {
+        setAlarms(selectedAlarm.deleteSelfFrom(alarms));
+      }
+      setMutateDrawerIsOpen(false);
+    }
   }, [pathname]);
 
   const navigateToMutateAlarm: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     const alarm = new NullAlarm();
-    flushSync(() => setSelelectedAlarm(alarm));
-    setAlarms(alarms => [alarm, ...alarms]);
+    setSelelectedAlarm(alarm);
     navigate(paths.alarm + "/add");
+    setAlarms(alarms => [alarm, ...alarms]);
   }
 
   const alarmsContainerRef = useRef<HTMLDivElement | null>(null);

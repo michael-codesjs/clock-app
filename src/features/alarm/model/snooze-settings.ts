@@ -1,12 +1,12 @@
-import { InterfaceSnoozeSettings } from "../../../types/interfaces";
+import { Snooze } from "../";
 
 
-export class SnoozeSettings implements InterfaceSnoozeSettings {
+export class SnoozeSettings implements Snooze {
 
   interval: number;
   repeat: number;
 
-  constructor(settings:InterfaceSnoozeSettings) {
+  constructor(settings:Snooze) {
     
     this.interval = settings.interval!;
     this.repeat = settings.repeat!;
@@ -15,14 +15,14 @@ export class SnoozeSettings implements InterfaceSnoozeSettings {
 
 }
 
-export class NullSnoozeSettings implements InterfaceSnoozeSettings {
+export class NullSnoozeSettings implements Snooze {
   
   interval: number;
   repeat: number;
 
   constructor() {
-    this.interval = 0;
-    this.repeat = 0;
+    this.interval = 5;
+    this.repeat = 3;
   }
 
 }
