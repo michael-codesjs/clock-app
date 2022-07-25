@@ -155,7 +155,7 @@ export const AlarmView: React.FC<AlarmViewProps & { alarm: AlarmClass }> = (prop
                 letterSpacing={"wider"}
               > {nextRing.toLocaleTimeString("en", { hour: "2-digit", hourCycle: "h23", minute: "2-digit", })} </Text>
               <Text
-                fontSize={"11px"}
+                fontSize={"10px"}
                 color={useColorModeValue("gray.500", "gray.400")}
               > {alarm.name} </Text>
             </Box>
