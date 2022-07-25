@@ -7,7 +7,7 @@ export abstract class AbstractAlarm {
 
   // alarm properties
 
-  readonly index: number;
+  index: number;
   isNull: boolean;
   created: Date;
 
