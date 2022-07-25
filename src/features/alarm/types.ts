@@ -7,12 +7,13 @@ export type Time = {
 };
 
 export type Snooze = {
+  shouldSnooze: boolean,
   interval: number,
   repeat: number
 };
 
 export type AlarmOptions = {
-  readonly index?: number
+  index?: number
   name: string,
   enabled: boolean,
   created?: Date,

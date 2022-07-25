@@ -1,7 +1,5 @@
-import { Box, Center, Flex, Text, useBreakpointValue, useColorModeValue, VStack } from '@chakra-ui/react';
-import { useDrag, useGesture, UserDragConfig, UserScrollConfig, useScroll } from '@use-gesture/react';
+import { Box, Center, Flex, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import React, { useEffect, useRef } from 'react';
-import { useSpring, animated } from 'react-spring';
 
 interface Props {
     name: string,
@@ -27,6 +25,7 @@ export default function NumberScrollInput({ name, max, state }: Props) {
     const [value, setValue] = state;
     const scrollableInputRef = useRef<HTMLDivElement | null>(null);
     const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+    const touchIsActive = useRef(false);
 
     // height of each indivisual child in the scroll input.
     const childNodesHeight = 80;
@@ -38,12 +37,21 @@ export default function NumberScrollInput({ name, max, state }: Props) {
 
     function onScrollEnd() {
         let scrollInput = scrollableInputRef.current;
-        if (scrollInput) {
+        if (scrollInput && scrollableInputRef.current && !touchIsActive.current) {
             const scrollTop = scrollInput.scrollTop;
             const valueFromScroll = Math.round(scrollTop/childNodesHeight);
+
             setValue(valueFromScroll);
         }
 
+    }
+
+    const touchStartHander:React.TouchEventHandler<HTMLDivElement> = e => {
+        touchIsActive.current = true;
+    }
+
+    const touchEndHandler:React.TouchEventHandler<HTMLDivElement> = e => {
+        touchIsActive.current = false;
     }
 
     useEffect(() => {
@@ -68,6 +76,8 @@ export default function NumberScrollInput({ name, max, state }: Props) {
             <Flex
                 ref={scrollableInputRef}
                 onScroll={handleScroll}
+                onTouchStart={touchStartHander}
+                onTouchEnd={touchEndHandler}
                 direction={"column"}
                 width={"full"}
                 height={60}

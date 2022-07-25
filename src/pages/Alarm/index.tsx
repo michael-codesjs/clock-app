@@ -44,9 +44,6 @@ export default function Alarms() {
   useEffect(() => {
     if (action && (action === "add" || action === "edit") && !mutateAlarmDrawerIsOpen) setMutateDrawerIsOpen(true);
     else if (!action || (action !== "add" && action !== "edit") && mutateAlarmDrawerIsOpen) {
-      if(selectedAlarm.isNull) {
-        setAlarms(selectedAlarm.deleteSelfFrom(alarms));
-      }
       setMutateDrawerIsOpen(false);
     }
   }, [pathname]);
@@ -56,7 +53,6 @@ export default function Alarms() {
     const alarm = new NullAlarm();
     setSelelectedAlarm(alarm);
     navigate(paths.alarm + "/add");
-    setAlarms(alarms => [alarm, ...alarms]);
   }
 
   const alarmsContainerRef = useRef<HTMLDivElement | null>(null);

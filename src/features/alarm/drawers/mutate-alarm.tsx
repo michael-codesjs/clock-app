@@ -24,7 +24,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { useRecoilState } from "recoil";
-import { NullSnoozeSettings, SnoozeSettings } from "../model/snooze-settings";
+import { Alarm, NullAlarm, AlarmOptions, SnoozeSettings } from "../";
 import { ButtonPrimary } from "../../../components/buttons/solid";
 import Toggle from "../../../components/buttons/toggle";
 import DaysInput from "../../../components/days-input";
@@ -43,8 +43,10 @@ export function MutateAlarmDrawer() {
   const [hour, setHour] = useState(selectedAlarm.time.hour);
   const [minute, setMinute] = useState(selectedAlarm.time.minute);
   const [days, setDays] = useState(selectedAlarm.days);
-  const [snooze, setSnooze] = useState<SnoozeSettings | NullSnoozeSettings>(selectedAlarm.snooze);
-  const shouldSnooze = useState(snooze instanceof SnoozeSettings);
+  const [snoozeInterval, setSnoozeInterval] = useState(selectedAlarm.snooze.interval);
+  const [snoozeRepeat, setSnoozeRepeat] = useState(selectedAlarm.snooze.repeat);
+  const [shouldSnooze, setShouldSnooze] = useState(selectedAlarm.snooze.shouldSnooze);
+
   const snoozeSettingsDisclosure = useDisclosure({
     defaultIsOpen: false,
   });
@@ -95,12 +97,28 @@ export function MutateAlarmDrawer() {
   /* FUNCTIONALITY */
 
   function mutate() {
-
-    const mutatedAlarm = selectedAlarm.mutate({ days, time: { hour, minute }, snooze });
+    const alarmOptions:AlarmOptions = {
+      enabled: true,
+      name: name,
+      onceOff: false,
+      days,
+      time: { hour, minute },
+      snooze: {
+        interval: snoozeInterval,
+        repeat: snoozeRepeat,
+        shouldSnooze,
+      }
+    }
+    if(selectedAlarm instanceof Alarm) {
+      alarmOptions.index = selectedAlarm.index;
+      alarmOptions.created = selectedAlarm.created;
+    }
+    const mutatedAlarm = selectedAlarm.mutate(alarmOptions);
     const newAlarms = mutatedAlarm.to(alarms);
-    setSelectedAlarm(mutatedAlarm);
+    // setSelectedAlarm(mutatedAlarm);
     setAlarms(newAlarms);
     onClose();
+    setSelectedAlarm(new NullAlarm());
   }
 
   /* END */
@@ -262,7 +280,7 @@ export function MutateAlarmDrawer() {
                     spacing={0}
                     align={"start"}
                     onClick={() => {
-                      if (!shouldSnooze[0] && !snoozeSettingsDisclosure.isOpen) shouldSnooze[1](true);
+                      if (!shouldSnooze && !snoozeSettingsDisclosure.isOpen) setShouldSnooze(true);
                       snoozeSettingsDisclosure.onToggle();
                     }}
                   >
@@ -271,11 +289,13 @@ export function MutateAlarmDrawer() {
                       fontSize={"xs"}
                       color={shouldSnooze ? "purple.500" : "gray.400"}
                     >
-                      {shouldSnooze[0] ? <span> {snooze && snooze.interval} minutes {snooze && snooze.repeat} times </span> : "off"}
+                      {shouldSnooze ? <span> {snoozeInterval} minutes {snoozeRepeat} times </span> : "off"}
                     </Text>
                   </VStack>
                   <Spacer />
-                  <Toggle state={shouldSnooze} />
+                  <Toggle
+                    state={[shouldSnooze, setShouldSnooze]}
+                  />
                 </HStack>
 
                 <Box
@@ -310,12 +330,7 @@ export function MutateAlarmDrawer() {
                               key={interval}
                               spacing={3}
                               cursor={"pointer"}
-                              onClick={() => {
-                                setSnooze(snooze => {
-                                  const newSnooze = Object.assign({}, snooze, { interval });
-                                  return newSnooze;
-                                })
-                              }}
+                              onClick={() => setSnoozeInterval(interval)}
                             >
                               <Box
                                 as={"input"}
@@ -326,7 +341,7 @@ export function MutateAlarmDrawer() {
                                 id={interval.toString()}
                                 name="interval"
                                 value={interval}
-                                checked={!!snooze && snooze.interval === interval}
+                                checked={snoozeInterval === interval}
                                 onChange={() => { }}
                               />
                               <FormLabel
@@ -361,12 +376,7 @@ export function MutateAlarmDrawer() {
                               spacing={3}
                               width={"full"}
                               cursor={"pointer"}
-                              onClick={() => {
-                                setSnooze(snooze => {
-                                  const newSnooze = Object.assign({}, snooze, { repeat });
-                                  return newSnooze;
-                                })
-                              }}
+                              onClick={() => setSnoozeRepeat(repeat)}
                             >
                               <Box
                                 as={"input"}
@@ -377,7 +387,7 @@ export function MutateAlarmDrawer() {
                                 id={repeat.toString()}
                                 name="repeat"
                                 value={repeat}
-                                checked={!!snooze && snooze.repeat === repeat}
+                                checked={snoozeRepeat === repeat}
                                 onChange={() => { }}
                               />
                               <FormLabel
