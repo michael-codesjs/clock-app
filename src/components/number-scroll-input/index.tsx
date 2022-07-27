@@ -20,12 +20,6 @@ enum ScrollDirection {
  * So when a user has scrolled 80px thats 1, 160px thats 2, 240px thats 3 and so on.
  * A users scroll is not perfect and will not exactly scroll in increments of 80px;
  * For technical and visual purposes, we will need to round off the users scrollTop after he finishes scrolling.
- * We Do This How ?:
- * onTouchEnd event on mobile devices and onPointerMove event on desktop devices.
- * Reasons For Choosing These Particular Events ?:
- * touch events are also fired when a user is scrolling(they need to be touching the screen to scroll), thus when a user stops scrolling and his finger leaves the screen, the onTouchEnd event is fired.
- * when a user is scrolling using a mouse or trackpad, they ussually don't move their pointer in to a different location. Moving the pointer disrupts the scrolling and thus we conclud they are done scrolling.
- * PS: the experience is not gonna be the best for desktop devices :).
 */
 
 export default function NumberScrollInput({ name, max, state }: Props) {
@@ -40,14 +34,10 @@ export default function NumberScrollInput({ name, max, state }: Props) {
     // height of each indivisual child in the scroll input.
     const childNodesHeight = 80;
 
-    const pointerMoveHandler:React.PointerEventHandler<HTMLDivElement> = (e) => {
-        if(e.pointerType === "mouse") {
-            postScrollHandler();
-        }
-    }
+    const scrollHandler:React.UIEventHandler<HTMLDivElement> = (e) => {
+        if(scrollTimeout.current) window.clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = setTimeout(postScrollHandler,200);
 
-    const touchEndHandler:React.TouchEventHandler<HTMLDivElement> = e => {
-        postScrollHandler();
     }
 
     const postScrollHandler = () => {
@@ -81,8 +71,7 @@ export default function NumberScrollInput({ name, max, state }: Props) {
 
             <Flex
                 ref={scrollableInputRef}
-                onPointerMove={pointerMoveHandler}
-                onTouchEnd={touchEndHandler}
+                onScroll={scrollHandler}
                 direction={"column"}
                 width={"full"}
                 height={60}
