@@ -47,7 +47,7 @@ export default function NumberScrollInput({ name, max, state }: Props) {
     }
 
     const touchEndHandler:React.TouchEventHandler<HTMLDivElement> = e => {
-        touchIsActive.current = false;
+        postScrollHandler();
     }
 
     const postScrollHandler = () => {
