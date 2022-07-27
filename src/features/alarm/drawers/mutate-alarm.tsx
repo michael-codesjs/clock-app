@@ -200,7 +200,7 @@ export function MutateAlarmDrawer() {
               fontWeight={"normal"}
               color={useColorModeValue("gray.700", "gray.300")}
               userSelect={"none"}
-            > {isAdd ? "Set" : "Edit"} Alarm </Heading>
+            > { isAdd ? "Set" : "Edit" } Alarm </Heading>
 
           </DrawerHeader>
 

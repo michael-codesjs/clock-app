@@ -124,9 +124,6 @@ export default function Alarms() {
 
       </VStack>
 
-      <NumberScrollInput name={"test"} max={60} state={testState} />
-      {/* ALARMS LIST */}
-
       <VStack
         ref={alarmsContainerRef}
         spacing={0}
