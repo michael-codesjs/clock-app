@@ -1,5 +1,5 @@
 import { HStack, Icon, IconButton, Spacer, Text, useColorModeValue, useDimensions, useForceUpdate, VStack } from "@chakra-ui/react";
-import React, { Fragment, startTransition, useEffect, useMemo, useRef } from "react";
+import React, { Fragment, startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { IoMdAdd } from "react-icons/io";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -8,6 +8,7 @@ import { NullAlarm, MutateAlarmDrawer } from "../../features/alarm";
 import { alarmsAtom, mutateAlarmDrawerIsOpenAtom, selectedAlarmAtom } from "../../data/atoms";
 import { paths } from "../../utilities/constants";
 import { getNextAlarmToRing, getTimeFromNow } from "../../utilities/functions";
+import NumberScrollInput from "../../components/number-scroll-input";
 
 
 export default function Alarms() {
@@ -57,6 +58,8 @@ export default function Alarms() {
 
   const alarmsContainerRef = useRef<HTMLDivElement | null>(null);
   const alarmsContainerDimensions = useDimensions(alarmsContainerRef);
+
+  const testState = useState(0);
 
   return (
     <VStack
@@ -121,7 +124,7 @@ export default function Alarms() {
 
       </VStack>
 
-
+      <NumberScrollInput name={"test"} max={60} state={testState} />
       {/* ALARMS LIST */}
 
       <VStack
@@ -144,8 +147,6 @@ export default function Alarms() {
       </VStack>
 
       {/* MUTATE ALARM DRAWER STATE */}
-
-      <MutateAlarmDrawer />
 
     </VStack>
   )
