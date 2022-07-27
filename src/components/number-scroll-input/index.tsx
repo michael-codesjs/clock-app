@@ -12,10 +12,20 @@ enum ScrollDirection {
     down = "down"
 }
 
+
+
 /*
  * Works by getting the number of pixels the user has scrolled from the top.
- * The scroll input has child nodes of 80px each.
- * Rounding the quotient of scrollableInput.current.scroll by childNodesHeight gives us the numerical value to be used.
+ * The scroll input has child nodes of height 80px.
+ * So when a user has scrolled 80px thats 1, 160px thats 2, 240px thats 3 and so on.
+ * A users scroll is not perfect and will not exactly scroll in increments of 80px;
+ * For technical and visual purposes, we will need to round off the users scrollTop after he finishes scrolling.
+ * We Do This How ?:
+ * onTouchEnd event on mobile devices and onPointerMove event on desktop devices.
+ * Reasons For Choosing These Particular Events ?:
+ * touch events are also fired when a user is scrolling(they need to be touching the screen to scroll), thus when a user stops scrolling and his finger leaves the screen, the onTouchEnd event is fired.
+ * when a user is scrolling using a mouse or trackpad, they ussually don't move their pointer in to a different location. Moving the pointer disrupts the scrolling and thus we conclud they are done scrolling.
+ * PS: the experience is not gonna be the best for desktop devices :).
 */
 
 export default function NumberScrollInput({ name, max, state }: Props) {
@@ -30,28 +40,24 @@ export default function NumberScrollInput({ name, max, state }: Props) {
     // height of each indivisual child in the scroll input.
     const childNodesHeight = 80;
 
-    const handleScroll: React.UIEventHandler = (e) => {
-        if (scrollTimeout.current) window.clearTimeout(scrollTimeout.current);
-        scrollTimeout.current = setTimeout(onScrollEnd,100);
-    }   
-
-    function onScrollEnd() {
-        let scrollInput = scrollableInputRef.current;
-        if (scrollInput && scrollableInputRef.current && !touchIsActive.current) {
-            const scrollTop = scrollInput.scrollTop;
-            const valueFromScroll = Math.round(scrollTop/childNodesHeight);
-
-            setValue(valueFromScroll);
+    const pointerMoveHandler:React.PointerEventHandler<HTMLDivElement> = (e) => {
+        if(e.pointerType === "mouse") {
+            postScrollHandler();
         }
-
-    }
-
-    const touchStartHander:React.TouchEventHandler<HTMLDivElement> = e => {
-        touchIsActive.current = true;
     }
 
     const touchEndHandler:React.TouchEventHandler<HTMLDivElement> = e => {
         touchIsActive.current = false;
+    }
+
+    const postScrollHandler = () => {
+        let scrollInput = scrollableInputRef.current;
+        if (scrollInput && scrollableInputRef.current && !touchIsActive.current) {
+            const scrollTop = scrollInput.scrollTop;
+            const valueFromScroll = Math.round(scrollTop/childNodesHeight);
+            setValue(valueFromScroll);
+        }
+
     }
 
     useEffect(() => {
@@ -75,8 +81,7 @@ export default function NumberScrollInput({ name, max, state }: Props) {
 
             <Flex
                 ref={scrollableInputRef}
-                onScroll={handleScroll}
-                onTouchStart={touchStartHander}
+                onPointerMove={pointerMoveHandler}
                 onTouchEnd={touchEndHandler}
                 direction={"column"}
                 width={"full"}
