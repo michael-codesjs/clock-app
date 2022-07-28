@@ -162,8 +162,6 @@ export function MutateAlarm() {
             <Text
               width={"full"}
               fontSize={"2xl"}
-              fontWeight={"medium"}
-              letterSpacing={1.2}
               textTransform={"capitalize"}
               color={useColorModeValue("gray.700","gray.200")}
             > Set alarm </Text>
