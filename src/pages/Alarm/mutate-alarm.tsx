@@ -137,237 +137,265 @@ export function MutateAlarm() {
       position={"fixed"}
       height={"full"}
       width={"full"}
-      p={7}
-      spacing={10}
       top={0}
       left={0}
       bottom={0}
       right={0}
       zIndex={101}
-      backgroundColor={useColorModeValue("white", "gray.700")}
+      backgroundColor={useColorModeValue("white", "gray.800")}
     >
-      {/* HEADER */}
-      <VStack width={"full"}>
-        <HStack
-          width={"full"}
-          spacing={5}
-        >
-          <Text
-            width={"full"}
-            fontSize={"xl"}
-            textTransform={"capitalize"}
-          > Set alarm </Text>
-          <Text
-            as={"button"}
-            role={"close-button"}
-            width={"72px"}
-            fontSize={"xs"}
-            fontWeight={"medium"}
-            color={useColorModeValue("gray.400", "gray.400")}
-            onClick={onClose}
-          > back </Text>
-        </HStack>
-      </VStack>
-
-
-      {/* BODY */}
       <VStack
-        spacing={5}
-        flex={1}
+        width={"full"}
+        height={"full"}
+        maxW={"lg"}
+        p={8}
+        spacing={3}
       >
-        { /* scroll input group */}
-        <HStack
-          align={"center"}
-          justify={"center"}
-        >
-          <NumberScrollInput name={""} max={24} state={[hour, setHour]} />
-          <Text
-            fontSize={"4xl"}
-            fontWeight={"medium"}
-            textAlign={"center"}
-          > : </Text>
-          <NumberScrollInput name={""} max={60} state={[minute, setMinute]} />
-        </HStack>
-
-
-        {/* ALARM SETTINGS */}
+        {/* HEADER */}
         <VStack
-          height={"full"}
-          p={0}
           width={"full"}
-          overflowY={"scroll"}
         >
-
-          {/* days input */}
-          <DaysInput state={[days, setDays]} />
-
-          {/* alarm name */}
-          <Input
-            variant={"unstyled"}
-            py={2}
-            rounded={0}
-            fontSize={"sm"}
-            w={"full"}
-            borderBottomWidth={2}
-            borderBottomColor={"gray.200"}
-            transition={"all"}
-            _focus={{
-              outline: 0,
-              borderBottomColor: "blue.600",
-              py: 3
-            }}
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder={"Alarm name."}
-          />
-
-          {/* snooze settings */}
-
-          <VStack
-            spacing={2}
+          <HStack
             width={"full"}
+            spacing={5}
           >
-            <HStack
-              py={2}
+            <Text
               width={"full"}
-              align={"center"}
-            >
-
-              <VStack
-                cursor={"pointer"}
-                spacing={0}
-                align={"start"}
-                onClick={() => {
-                  if (!shouldSnooze && !snoozeSettingsDisclosure.isOpen) setShouldSnooze(true);
-                  snoozeSettingsDisclosure.onToggle();
-                }}
-              >
-                <Text fontSize="sm"> Snooze </Text>
-                <Text
-                  fontSize={"xs"}
-                  color={shouldSnooze ? "purple.500" : "gray.400"}
-                >
-                  {shouldSnooze ? <span> {snoozeInterval} minutes {snoozeRepeat} times </span> : "off"}
-                </Text>
-              </VStack>
-              <Spacer />
-              <Toggle
-                state={[shouldSnooze, setShouldSnooze]}
-              />
-            </HStack>
-
-            <Box
-              as={Collapse}
-              in={snoozeSettingsDisclosure.isOpen}
-              width={"full"}
-              borderWidth={1}
-              rounded={"xl"}
-            >
-              <VStack
-                spacing={3}
-                p={4}
-                width={"full"}
-              >
-                <VStack
-                  as={"fieldset"}
-                  spacing={2}
-                  align={"start"}
-                  width={"full"}
-                >
-                  <Text
-                    as={"legend"}
-                    fontSize={"sm"}
-                    fontWeight={"medium"}
-                    textColor={"gray.600"}
-                  > Interval </Text>
-                  <Divider />
-                  {
-                    [5, 10, 15].map(interval => {
-                      return (
-                        <HStack
-                          key={interval}
-                          spacing={3}
-                          cursor={"pointer"}
-                          onClick={() => setSnoozeInterval(interval)}
-                        >
-                          <Box
-                            as={"input"}
-                            h={4}
-                            w={4}
-                            cursor={"pointer"}
-                            type="radio"
-                            id={interval.toString()}
-                            name="interval"
-                            value={interval}
-                            checked={snoozeInterval === interval}
-                            onChange={() => { }}
-                          />
-                          <FormLabel
-                            htmlFor={interval.toString()}
-                            fontSize={"sm"}
-                            color={"gray.500"}
-                            cursor={"pointer"}
-                          > {interval} minutes </FormLabel>
-                        </HStack>
-                      )
-                    })
-                  }
-                </VStack>
-
-                <VStack
-                  as={"fieldset"}
-                  spacing={2}
-                  width={"full"}
-                >
-                  <Text
-                    as={"legend"}
-                    fontSize={"sm"}
-                    fontWeight={"medium"}
-                    textColor={"gray.600"}
-                  > Repeat </Text>
-                  <Divider />
-                  {
-                    [3, 5, Infinity].map(repeat => {
-                      return (
-                        <HStack
-                          key={repeat}
-                          spacing={3}
-                          width={"full"}
-                          cursor={"pointer"}
-                          onClick={() => setSnoozeRepeat(repeat)}
-                        >
-                          <Box
-                            as={"input"}
-                            h={4}
-                            w={4}
-                            cursor={"pointer"}
-                            type="radio"
-                            id={repeat.toString()}
-                            name="repeat"
-                            value={repeat}
-                            checked={snoozeRepeat === repeat}
-                            onChange={() => { }}
-                          />
-                          <FormLabel
-                            htmlFor={repeat.toString()}
-                            fontSize={"sm"}
-                            color={"gray.500"}
-                            cursor={"pointer"}
-                          > {repeat} times </FormLabel>
-                        </HStack>
-
-                      )
-                    })
-                  }
-                </VStack>
-              </VStack>
-            </Box>
-          </VStack>
+              fontSize={"2xl"}
+              fontWeight={"medium"}
+              letterSpacing={1.2}
+              textTransform={"capitalize"}
+              color={useColorModeValue("gray.700","gray.200")}
+            > Set alarm </Text>
+            <Text
+              as={"button"}
+              role={"close-button"}
+              width={"72px"}
+              fontSize={"xs"}
+              fontWeight={"normal"}
+              color={"red.400"}
+              onClick={onClose}
+            > cancel </Text>
+          </HStack>
         </VStack>
 
+        <Divider />
+
+
+        {/* BODY */}
+        <VStack
+          spacing={10}
+          width={"full"}
+          py={5}
+          flex={1}
+        >
+          { /* scroll input group */}
+          <HStack
+            align={"center"}
+            width={"full"}
+            justify={"center"}
+          >
+            <NumberScrollInput name={""} max={24} state={[hour, setHour]} />
+            <Text
+              fontSize={"4xl"}
+              fontWeight={"medium"}
+              textAlign={"center"}
+            > : </Text>
+            <NumberScrollInput name={""} max={60} state={[minute, setMinute]} />
+          </HStack>
+
+
+          {/* ALARM SETTINGS */}
+          <VStack
+            height={"full"}
+            p={0}
+            width={"full"}
+            overflowY={"scroll"}
+          >
+
+            {/* days input */}
+            <DaysInput state={[days, setDays]} />
+
+            {/* alarm name */}
+            <Input
+              variant={"unstyled"}
+              py={2}
+              rounded={0}
+              fontSize={"sm"}
+              w={"full"}
+              borderBottomWidth={2}
+              borderBottomColor={"gray.200"}
+              transition={"all"}
+              _focus={{
+                outline: 0,
+                borderBottomColor: "blue.600",
+                py: 3
+              }}
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder={"Alarm name."}
+            />
+
+            {/* snooze settings */}
+
+            <VStack
+              spacing={2}
+              width={"full"}
+            >
+              <HStack
+                py={2}
+                width={"full"}
+                align={"center"}
+              >
+
+                <VStack
+                  cursor={"pointer"}
+                  spacing={0}
+                  align={"start"}
+                  onClick={() => {
+                    if (!shouldSnooze && !snoozeSettingsDisclosure.isOpen) setShouldSnooze(true);
+                    snoozeSettingsDisclosure.onToggle();
+                  }}
+                >
+                  <Text fontSize="sm"> Snooze </Text>
+                  <Text
+                    fontSize={"xs"}
+                    color={shouldSnooze ? "purple.500" : "gray.400"}
+                  >
+                    {shouldSnooze ? <span> {snoozeInterval} minutes {snoozeRepeat} times </span> : "off"}
+                  </Text>
+                </VStack>
+                <Spacer />
+                <Toggle
+                  state={[shouldSnooze, setShouldSnooze]}
+                />
+              </HStack>
+
+              <Box
+                as={Collapse}
+                in={snoozeSettingsDisclosure.isOpen}
+                width={"full"}
+                borderWidth={1}
+                rounded={"xl"}
+              >
+                <VStack
+                  spacing={3}
+                  p={4}
+                  width={"full"}
+                >
+                  <VStack
+                    as={"fieldset"}
+                    spacing={2}
+                    align={"start"}
+                    width={"full"}
+                  >
+                    <Text
+                      as={"legend"}
+                      fontSize={"sm"}
+                      fontWeight={"medium"}
+                      textColor={"gray.600"}
+                    > Interval </Text>
+                    <Divider />
+                    {
+                      [5, 10, 15].map(interval => {
+                        return (
+                          <HStack
+                            key={interval}
+                            spacing={3}
+                            cursor={"pointer"}
+                            onClick={() => setSnoozeInterval(interval)}
+                          >
+                            <Box
+                              as={"input"}
+                              h={4}
+                              w={4}
+                              cursor={"pointer"}
+                              type="radio"
+                              id={interval.toString()}
+                              name="interval"
+                              value={interval}
+                              checked={snoozeInterval === interval}
+                              onChange={() => { }}
+                            />
+                            <FormLabel
+                              htmlFor={interval.toString()}
+                              fontSize={"sm"}
+                              color={"gray.500"}
+                              cursor={"pointer"}
+                            > {interval} minutes </FormLabel>
+                          </HStack>
+                        )
+                      })
+                    }
+                  </VStack>
+
+                  <VStack
+                    as={"fieldset"}
+                    spacing={2}
+                    width={"full"}
+                  >
+                    <Text
+                      as={"legend"}
+                      fontSize={"sm"}
+                      fontWeight={"medium"}
+                      textColor={"gray.600"}
+                    > Repeat </Text>
+                    <Divider />
+                    {
+                      [3, 5, Infinity].map(repeat => {
+                        return (
+                          <HStack
+                            key={repeat}
+                            spacing={3}
+                            width={"full"}
+                            cursor={"pointer"}
+                            onClick={() => setSnoozeRepeat(repeat)}
+                          >
+                            <Box
+                              as={"input"}
+                              h={4}
+                              w={4}
+                              cursor={"pointer"}
+                              type="radio"
+                              id={repeat.toString()}
+                              name="repeat"
+                              value={repeat}
+                              checked={snoozeRepeat === repeat}
+                              onChange={() => { }}
+                            />
+                            <FormLabel
+                              htmlFor={repeat.toString()}
+                              fontSize={"sm"}
+                              color={"gray.500"}
+                              cursor={"pointer"}
+                            > {repeat} times </FormLabel>
+                          </HStack>
+
+                        )
+                      })
+                    }
+                  </VStack>
+                </VStack>
+              </Box>
+            </VStack>
+          </VStack>
+
+
+        </VStack>
+
+        <Divider />
+
+        <VStack
+          width={"full"}
+        >
+          <ButtonPrimary
+            ref={setAlarmButtonRef}
+            width={"full"}
+            onClick={mutate}
+          > Save </ButtonPrimary>
+        </VStack>
 
       </VStack>
-
     </VStack>
   )
 
