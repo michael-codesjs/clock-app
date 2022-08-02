@@ -1,7 +1,5 @@
-import { Box, Center, Flex, Text, useBreakpointValue, useColorModeValue, VStack } from '@chakra-ui/react';
-import { useDrag, useGesture, UserDragConfig, UserScrollConfig, useScroll } from '@use-gesture/react';
+import { Box, Center, Flex, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import React, { useEffect, useRef } from 'react';
-import { useSpring, animated } from 'react-spring';
 
 interface Props {
     name: string,
@@ -14,28 +12,48 @@ enum ScrollDirection {
     down = "down"
 }
 
+
+
 /*
  * Works by getting the number of pixels the user has scrolled from the top.
- * The scroll input has child nodes of 80px each.
- * Rounding the quotient of scrollableInput.current.scroll by childNodesHeight gives us the numerical value to be used.
+ * The scroll input has child nodes of height 80px.
+ * So when a user has scrolled 80px thats 1, 160px thats 2, 240px thats 3 and so on.
+ * A users scroll is not perfect and will not exactly scroll in increments of 80px;
+ * For technical and visual purposes, we will need to round off the users scrollTop after he finishes scrolling.
 */
 
 export default function NumberScrollInput({ name, max, state }: Props) {
 
-    const childNodesHeight = 80; // height of each indivisual div in the scroll input.
+    // TO DO: IMPROVE SCROLL UX
 
     const [value, setValue] = state;
-    const mainRef = useRef<HTMLDivElement | null>(null);
+    const scrollableInputRef = useRef<HTMLDivElement | null>(null);
+    const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+    const touchIsActive = useRef(false);
 
-    const bindScroll = useGesture({
-        onScrollEnd: ({ offset: [, my], movement: [, dy] }) => {childNodesHeight
-            const valueFromScroll = Math.round(my / childNodesHeight);
+    // height of each indivisual child in the scroll input.
+    const childNodesHeight = 80;
+
+    const scrollHandler:React.UIEventHandler<HTMLDivElement> = (e) => {
+        if(scrollTimeout.current) window.clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = setTimeout(postScrollHandler,200);
+
+    }
+
+    const postScrollHandler = () => {
+        let scrollInput = scrollableInputRef.current;
+        if (scrollInput && scrollableInputRef.current && !touchIsActive.current) {
+            const scrollTop = scrollInput.scrollTop;
+            const valueFromScroll = Math.round(scrollTop/childNodesHeight);
             setValue(valueFromScroll);
         }
-    });
+
+    }
 
     useEffect(() => {
-        if (mainRef.current) mainRef.current.scrollTop = value * childNodesHeight;
+        if (scrollableInputRef.current) {
+            scrollableInputRef.current.scrollTop = childNodesHeight * value;
+        }
     }, [value]);
 
     return (
@@ -52,14 +70,13 @@ export default function NumberScrollInput({ name, max, state }: Props) {
             > {name} </Text>
 
             <Flex
-                ref={mainRef}
-                as={animated.div}
+                ref={scrollableInputRef}
+                onScroll={scrollHandler}
                 direction={"column"}
                 width={"full"}
                 height={60}
                 overflowY={"scroll"}
                 className={"number-scroll-input " + useColorModeValue("light", "dark")}
-                {...bindScroll()}
             >
                 <Box className={"after"} />
 

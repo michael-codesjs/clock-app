@@ -1,8 +1,6 @@
 
 
 
-export type appName = "clock-app"
-
 
 /* ALARM RELATED TYPES  */
 

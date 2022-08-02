@@ -1,8 +1,5 @@
 import { atom } from "recoil";
-import { AbstractAlarm } from "../features/alarm";
-// import { AbstractAlarm } from "../features/alarm";
-import { Alarm } from "../features/alarm/model/alarm";
-import { NullAlarm } from "../features/alarm/model/null-alarm";
+import { AbstractAlarm, Alarm, NullAlarm } from "../features/alarm";
 import { localPersistEffect } from "./atom-effects";
 
 /* ALARM RELATED ATOMS */
@@ -11,8 +8,11 @@ import { localPersistEffect } from "./atom-effects";
 const alarmLocalPersistEffect = localPersistEffect({
   // instanciate the alarms gotten from local storage.
   onLocalStorageGetItem: (alarms: Array<AbstractAlarm> | (AbstractAlarm)) => {
-    // alarms = Array.isArray(alarms) ? alarms.filter(alarm => !alarm.isNull) : alarms;
-    const alarmisify = (alarm:any) => alarm.isNull ? new Alarm(alarm) : new Alarm(alarm);
+    if(!alarms) return;
+    alarms = Array.isArray(alarms) ? alarms.filter(alarm => !alarm.isNull) : alarms;
+    const alarmisify = (alarm:AbstractAlarm) => {
+      return alarm.isNull ? new NullAlarm() : new Alarm(alarm);
+    }
     const instanciatedAlarmInstances = Array.isArray(alarms) ? alarms.map(alarm => alarmisify(alarm)) : alarmisify(alarms);
     return instanciatedAlarmInstances;
   }
@@ -22,6 +22,7 @@ const alarmLocalPersistEffect = localPersistEffect({
 export const alarmsAtom = atom<Array<AbstractAlarm>>({
   key: "alarms",
   default: [],
+  dangerouslyAllowMutability: true,
   effects: [
     alarmLocalPersistEffect
   ]

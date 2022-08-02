@@ -6,7 +6,6 @@ import Toggle from "../../../components/buttons/toggle";
 import SelectedDays from "../../../components/days-input/selected";
 import { alarmsAtom } from "../../../data/atoms";
 import { Alarm as AlarmClass } from "../model/alarm";
-import { NullAlarm as NullAlarmClass } from "../model/null-alarm"
 import { Box, HStack, Icon, IconButton, ScaleFade, Text, useColorModeValue } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { AlarmViewProps } from "../types";
@@ -154,9 +153,9 @@ export const AlarmView: React.FC<AlarmViewProps & { alarm: AlarmClass }> = (prop
                 fontWeight={"medium"}
                 color={useColorModeValue("gray.800", "gray.50")}
                 letterSpacing={"wider"}
-              > {nextRing.toLocaleTimeString("en", { hour: "2-digit", hour12: false, minute: "2-digit" })} </Text>
+              > {nextRing.toLocaleTimeString("en", { hour: "2-digit", hourCycle: "h23", minute: "2-digit", })} </Text>
               <Text
-                fontSize={"11px"}
+                fontSize={"10px"}
                 color={useColorModeValue("gray.500", "gray.400")}
               > {alarm.name} </Text>
             </Box>
